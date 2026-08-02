@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Playtime</title>
 
-<!-- Firebase App SDKs (Compat Version for easy integration) -->
+<!-- Firebase App SDKs (Compat Version) -->
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 
@@ -59,7 +59,7 @@ body{
     transition: background 0.3s ease, color 0.3s ease;
 }
 
-/* --- Smaller Premium Golden Free Access Button Style --- */
+/* --- Golden Access Button --- */
 .golden-access-banner {
     width: 100%;
     max-width: 320px;
@@ -104,7 +104,6 @@ body{
     color: #fbf5b7;
 }
 
-/* --- Countdown Timer Style --- */
 .countdown-timer-box {
     text-align: center;
     font-size: 13px;
@@ -118,7 +117,6 @@ body{
     color: #fbbf24;
 }
 
-/* --- VIP Status Badge in Header --- */
 .vip-badge-tag {
     background: linear-gradient(135deg, #f59e0b, #d97706);
     color: white;
@@ -131,7 +129,7 @@ body{
     letter-spacing: 0.5px;
 }
 
-/* --- Premium Expired Modal Overlay --- */
+/* --- Expired Modal --- */
 .expired-modal-overlay {
     position: fixed;
     top: 0;
@@ -181,7 +179,6 @@ body{
     display: flex;
     justify-content: center;
     align-items: center;
-    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.15);
 }
 
 .expired-icon-circle svg {
@@ -202,7 +199,6 @@ body{
     line-height: 1.5;
     color: #94a3b8;
     margin-bottom: 24px;
-    padding: 0 10px;
 }
 
 .expired-btns-row {
@@ -220,11 +216,6 @@ body{
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
-    transition: 0.2s;
-}
-
-.expired-btn-later:hover {
-    background: #2d3342;
 }
 
 .expired-btn-renew {
@@ -241,13 +232,6 @@ body{
     align-items: center;
     gap: 6px;
     cursor: pointer;
-    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.35);
-    transition: 0.2s;
-}
-
-.expired-btn-renew:hover {
-    opacity: 0.9;
-    transform: translateY(-1px);
 }
 
 /* Header */
@@ -264,7 +248,6 @@ body{
     z-index:10;
     border-bottom: 1px solid var(--header-border);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    transition: background 0.3s ease, border-color 0.3s ease;
 }
 
 .header-left{
@@ -317,11 +300,6 @@ body{
     align-items:center;
     gap:6px;
     cursor:pointer;
-    transition: 0.2s;
-}
-
-.google-login-btn:hover {
-    background: var(--btn-hover);
 }
 
 .google-login-btn img{
@@ -339,11 +317,6 @@ body{
     justify-content:center;
     align-items:center;
     cursor:pointer;
-    transition: 0.2s;
-}
-
-.menu-btn:hover {
-    background: var(--btn-hover);
 }
 
 .menu-icon{
@@ -387,7 +360,6 @@ body{
     overflow:hidden;
     border: 1px solid var(--card-border);
     background: var(--card-bg);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .gif-container img{
@@ -395,7 +367,6 @@ body{
     height:100%;
     object-fit: cover;
     object-position: center 20%;
-    display:block;
 }
 
 .option-btn{
@@ -413,14 +384,12 @@ body{
     font-size:15px;
     font-weight:600;
     cursor:pointer;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
-    transition: all 0.2s ease;
+    transition: 0.2s;
 }
 
 .option-btn:hover {
     background: var(--btn-bg);
     border-color: var(--primary-color);
-    transform: translateY(-1px);
 }
 
 .icon{
@@ -447,7 +416,6 @@ body{
     object-fit: cover;
     border: 1px solid var(--card-border);
     background: var(--card-bg);
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
 }
 
 .back-btn{
@@ -463,13 +431,6 @@ body{
     gap: 10px;
     cursor: pointer;
     margin-bottom: 20px;
-    transition: 0.2s;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
-}
-
-.back-btn:hover {
-    background: var(--btn-bg);
-    border-color: var(--primary-color);
 }
 
 .page-title-box {
@@ -482,7 +443,6 @@ body{
     display: flex;
     align-items: center;
     gap: 15px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
 }
 
 .page-title-box h2 {
@@ -497,7 +457,6 @@ body{
     border-radius: 16px;
     margin-bottom: 35px;
     overflow: hidden;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
 }
 
 .video-player-container {
@@ -507,16 +466,11 @@ body{
     background: #000;
 }
 
-.video-player-container video::-webkit-media-controls-fullscreen-button {
-    display: none !important;
-}
-
 .video-player-container video {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
-    -webkit-touch-callout: none; 
 }
 
 .next-page-btn {
@@ -533,17 +487,10 @@ body{
     align-items: center;
     gap: 8px;
     cursor: pointer;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    transition: 0.2s;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+    margin: 20px 0;
 }
 
-.next-page-btn:hover {
-    background: var(--btn-bg);
-    border-color: var(--primary-color);
-}
-
+/* Theater Mode */
 .custom-theater-overlay {
     position: fixed;
     top: 0;
@@ -574,12 +521,6 @@ body{
     border: 1px solid var(--card-border);
     border-radius: 16px;
     overflow: hidden;
-    transform: scale(0.95);
-    transition: transform 0.3s ease;
-}
-
-.custom-theater-overlay.active .custom-theater-box {
-    transform: scale(1);
 }
 
 .custom-theater-box video {
@@ -628,31 +569,10 @@ body{
     align-items: center;
 }
 
-.badge {
+.badge, .custom-fs-btn, .custom-play-btn {
     background: var(--badge-bg);
     border: 1px solid var(--card-border);
     color: var(--badge-text);
-    font-size: 11px;
-    font-weight: 600;
-    padding: 3px 6px;
-    border-radius: 6px;
-}
-
-.custom-fs-btn {
-    background: var(--badge-bg);
-    border: 1px solid var(--card-border);
-    color: var(--badge-text);
-    font-size: 11px;
-    font-weight: 600;
-    padding: 3px 6px;
-    border-radius: 6px;
-    cursor: pointer;
-}
-
-.custom-play-btn {
-    background: var(--badge-bg);
-    border: 1px solid var(--card-border);
-    color: #16a34a;
     font-size: 11px;
     font-weight: 600;
     padding: 3px 8px;
@@ -660,6 +580,11 @@ body{
     cursor: pointer;
 }
 
+.custom-play-btn {
+    color: #16a34a;
+}
+
+/* Sidebar */
 .sidebar {
     position: fixed;
     top: 0;
@@ -669,7 +594,7 @@ body{
     background: var(--sidebar-bg);
     box-shadow: -5px 0 25px var(--sidebar-shadow);
     border-left: 1px solid var(--header-border);
-    transition: right 0.3s ease, background 0.3s ease;
+    transition: right 0.3s ease;
     z-index: 1000;
     padding: 20px;
     display: flex;
@@ -716,11 +641,9 @@ body{
     display: flex;
     align-items: center;
     gap: 12px;
-    transition: 0.2s;
     cursor: pointer;
     background: var(--card-bg);
     border: 1px solid var(--card-border);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
 }
 
 .sidebar-link:hover {
@@ -736,7 +659,7 @@ body{
     object-fit: cover;
 }
 
-/* --- User Profile Item in Sidebar --- */
+/* Sidebar User Profile Card */
 .sidebar-user-profile {
     display: none;
     align-items: center;
@@ -746,7 +669,6 @@ body{
     background: var(--card-bg);
     border: 1px solid var(--card-border);
     border-radius: 12px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
 }
 
 .sidebar-user-avatar {
@@ -804,7 +726,7 @@ body{
     </div>
 
     <div class="header-right">
-        <!-- Google Login Button (Hides automatically on login) -->
+        <!-- Google Login Button (Hides automatically when logged in) -->
         <button class="google-login-btn" id="loginBtn">
             <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
             <span id="loginBtnText">Login</span>
@@ -823,7 +745,6 @@ body{
 <div id="homeView" class="view-section active">
     <div class="main">
         
-        <!-- Golden Free Access Button -->
         <div class="golden-access-banner" id="goldenAccessBtn">
             <div class="golden-btn-inner">
                 <h3>✨ Get 10 Sec Free Access ✨</h3>
@@ -831,44 +752,43 @@ body{
             </div>
         </div>
 
-        <!-- Countdown Timer Display Box -->
         <div class="countdown-timer-box" id="countdownBox">
             ⏱️ Free Access Remaining: <span id="timerDisplay">00:10</span>
         </div>
 
         <div class="gif-container">
-            <img src="https://lh3.googleusercontent.com/d/1c82JhjhupPfLzEAD_VcI1XKgQH4R1u6O" alt="Animated GIF">
+            <img src="https://lh3.googleusercontent.com/d/1c82JhjhupPfLzEAD_VcI1XKgQH4R1u6O" alt="GIF">
         </div>
 
         <button class="option-btn" id="instaBtn">
-            <img src="https://lh3.googleusercontent.com/d/12ZV2Epf3zEF-7a8G_XBSu4gE8w1BUPzH" class="icon" alt="Instagram viral video">
+            <img src="https://lh3.googleusercontent.com/d/12ZV2Epf3zEF-7a8G_XBSu4gE8w1BUPzH" class="icon" alt="Insta">
             Instagram viral video
         </button>
 
         <button class="option-btn">
-            <img src="https://lh3.googleusercontent.com/d/1m2m9B0GXc-5t8sB2Se0LLV0BBqN913ks" class="icon" alt="Japanese adult videos">
+            <img src="https://lh3.googleusercontent.com/d/1m2m9B0GXc-5t8sB2Se0LLV0BBqN913ks" class="icon" alt="Jap">
             Japanese adult videos
         </button>
 
         <button class="option-btn">
-            <img src="https://lh3.googleusercontent.com/d/1R6qmY9bL6qw3oKeuC5n1IyMGZ27BEKGf" class="icon" alt="American adult videos">
+            <img src="https://lh3.googleusercontent.com/d/1R6qmY9bL6qw3oKeuC5n1IyMGZ27BEKGf" class="icon" alt="US">
             American adult videos
         </button>
 
         <button class="option-btn">
-            <img src="https://lh3.googleusercontent.com/d/1EOTFIc7AAesuSY_w7zIrQpQ_a5L7kZ_J" class="icon" alt="Desi adult videos">
+            <img src="https://lh3.googleusercontent.com/d/1EOTFIc7AAesuSY_w7zIrQpQ_a5L7kZ_J" class="icon" alt="Desi">
             Desi adult videos
         </button>
 
         <button class="option-btn" id="girlsBtn">
-            <img src="https://lh3.googleusercontent.com/d/1Mj3Pjhz51_CMW8zt_yisILSBivRssX-B" class="icon" alt="Girl nudes video">
+            <img src="https://lh3.googleusercontent.com/d/1Mj3Pjhz51_CMW8zt_yisILSBivRssX-B" class="icon" alt="Girls">
             Girl nudes video
         </button>
 
         <div class="bottom-icons-container">
-            <img src="https://lh3.googleusercontent.com/d/13HR-Dy-bCb_SEltunMb0lUc5DoX7O4fL" class="footer-tiny-icon" alt="Icon 1">
-            <img src="https://lh3.googleusercontent.com/d/1bh5HiNa_q0GIFTQQotJo7VoZ1JvZ1qXd" class="footer-tiny-icon" alt="Icon 2">
-            <img src="https://lh3.googleusercontent.com/d/1YcFfnuOYVM6ishN_i5CSXqSAd2AqeJbf" class="footer-tiny-icon" alt="Icon 3">
+            <img src="https://lh3.googleusercontent.com/d/13HR-Dy-bCb_SEltunMb0lUc5DoX7O4fL" class="footer-tiny-icon" alt="1">
+            <img src="https://lh3.googleusercontent.com/d/1bh5HiNa_q0GIFTQQotJo7VoZ1JvZ1qXd" class="footer-tiny-icon" alt="2">
+            <img src="https://lh3.googleusercontent.com/d/1YcFfnuOYVM6ishN_i5CSXqSAd2AqeJbf" class="footer-tiny-icon" alt="3">
         </div>
 
     </div>
@@ -880,14 +800,13 @@ body{
         <button class="back-btn" id="backBtn">Back to Home</button>
 
         <div class="page-title-box">
-            <img src="https://lh3.googleusercontent.com/d/12ZV2Epf3zEF-7a8G_XBSu4gE8w1BUPzH" class="icon" alt="Instagram viral video">
+            <img src="https://lh3.googleusercontent.com/d/12ZV2Epf3zEF-7a8G_XBSu4gE8w1BUPzH" class="icon" alt="Insta">
             <h2>Instagram Viral Videos</h2>
         </div>
 
-        <!-- Reel #1 -->
         <div class="video-card">
             <div class="video-player-container">
-                <video id="reelVideo1" src="http://hc1.checker.in/file2link/videos/file_576239.mp4/" preload="metadata" muted playsinline webkit-playsinline></video>
+                <video id="reelVideo1" src="http://hc1.checker.in/file2link/videos/file_576239.mp4/" preload="metadata" muted playsinline></video>
             </div>
             <div class="video-info-bar">
                 <span class="video-title-text">🔥 Trending Reel #1</span>
@@ -899,10 +818,9 @@ body{
             </div>
         </div>
 
-        <!-- Reel #2 -->
         <div class="video-card">
             <div class="video-player-container">
-                <video id="reelVideo2" src="http://hc1.checker.in/file2link/videos/file_576255.mp4/" preload="metadata" muted playsinline webkit-playsinline></video>
+                <video id="reelVideo2" src="http://hc1.checker.in/file2link/videos/file_576255.mp4/" preload="metadata" muted playsinline></video>
             </div>
             <div class="video-info-bar">
                 <span class="video-title-text">🔥 Trending Reel #2</span>
@@ -924,14 +842,13 @@ body{
         <button class="back-btn" id="girlsBackBtn">Back to Home</button>
 
         <div class="page-title-box">
-            <img src="https://lh3.googleusercontent.com/d/1Mj3Pjhz51_CMW8zt_yisILSBivRssX-B" class="icon" alt="Girl nudes video">
+            <img src="https://lh3.googleusercontent.com/d/1Mj3Pjhz51_CMW8zt_yisILSBivRssX-B" class="icon" alt="Girls">
             <h2>Girl Nudes Videos Collection</h2>
         </div>
 
-        <!-- Girl Video #1 -->
         <div class="video-card">
             <div class="video-player-container">
-                <video id="girlVideo1" src="http://hc1.checker.in/file2link/videos/file_576389.mp4/" preload="metadata" muted playsinline webkit-playsinline></video>
+                <video id="girlVideo1" src="http://hc1.checker.in/file2link/videos/file_576389.mp4/" preload="metadata" muted playsinline></video>
             </div>
             <div class="video-info-bar">
                 <span class="video-title-text">✨ Exclusive Video #1</span>
@@ -943,41 +860,11 @@ body{
             </div>
         </div>
 
-        <!-- Girl Video #2 -->
-        <div class="video-card">
-            <div class="video-player-container">
-                <video id="girlVideo2" src="http://hc1.checker.in/file2link/videos/file_576388.mp4/" preload="metadata" muted playsinline webkit-playsinline></video>
-            </div>
-            <div class="video-info-bar">
-                <span class="video-title-text">✨ Exclusive Video #2</span>
-                <div class="video-badges">
-                    <button class="custom-play-btn" data-video="girlVideo2">▶ Play</button>
-                    <button class="custom-fs-btn" data-video="girlVideo2">Full View</button>
-                    <span class="badge">HD</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Girl Video #3 -->
-        <div class="video-card">
-            <div class="video-player-container">
-                <video id="girlVideo3" src="http://hc1.checker.in/file2link/videos/file_576387.mp4/" preload="metadata" muted playsinline webkit-playsinline></video>
-            </div>
-            <div class="video-info-bar">
-                <span class="video-title-text">✨ Exclusive Video #3</span>
-                <div class="video-badges">
-                    <button class="custom-play-btn" data-video="girlVideo3">▶ Play</button>
-                    <button class="custom-fs-btn" data-video="girlVideo3">Full View</button>
-                    <span class="badge">HD</span>
-                </div>
-            </div>
-        </div>
-
         <button class="next-page-btn" id="girlsNextPageBtn">Next Page</button>
     </div>
 </div>
 
-<!-- प्रीमियम एक्सपायर्ड पॉप-अप -->
+<!-- EXPIRED MODAL -->
 <div class="expired-modal-overlay" id="expiredModalOverlay">
     <div class="expired-modal-box">
         <div class="expired-icon-circle">
@@ -986,17 +873,15 @@ body{
             </svg>
         </div>
         <h2>Premium Expired</h2>
-        <p>Your premium plan has ended. Renew now to continue enjoying unlimited plays and downloads, ad-free experience, and all premium features.</p>
+        <p>Your premium plan has ended. Renew now to continue enjoying unlimited plays.</p>
         <div class="expired-btns-row">
             <button class="expired-btn-later" id="expiredLaterBtn">Maybe Later</button>
-            <button class="expired-btn-renew" id="expiredRenewBtn">
-                👑 Renew
-            </button>
+            <button class="expired-btn-renew" id="expiredRenewBtn">👑 Renew</button>
         </div>
     </div>
 </div>
 
-<!-- कस्टम थिएटर मोड -->
+<!-- THEATER MODE -->
 <div class="custom-theater-overlay" id="theaterOverlay">
     <div class="custom-theater-box">
         <button class="theater-close-btn" id="theaterCloseBtn">&times;</button>
@@ -1009,12 +894,12 @@ body{
 <div class="sidebar" id="sidebar">
     <div class="sidebar-header">
         <h2>Menu</h2>
-        <button class="close-btn" id="closeBtn">×</button>
+        <button class="close-btn" id="closeBtn">&times;</button>
     </div>
 
     <!-- Logged-in User Profile Card inside Sidebar -->
     <div class="sidebar-user-profile" id="sidebarUserProfile">
-        <img src="" id="sidebarUserAvatar" class="sidebar-user-avatar" alt="User Photo">
+        <img src="" id="sidebarUserAvatar" class="sidebar-user-avatar" alt="Avatar">
         <div class="sidebar-user-info">
             <span class="sidebar-user-name" id="sidebarUserName">User</span>
             <span class="sidebar-user-status" id="sidebarUserStatus">Online / Member</span>
@@ -1027,10 +912,9 @@ body{
             Home
         </a>
         <a href="#" class="sidebar-link">
-            <img src="https://lh3.googleusercontent.com/d/1Q-DIL-1NyOhhBnZl2foeFA7kB9EVebxD" class="sidebar-icon" alt="Premium">
+            <img src="https://lh3.googleusercontent.com/d/1Q-DIL-1NyOhhBnZl2foeFA7kB9EVebxD" class="sidebar-icon" alt="Prem">
             Premium Video
         </a>
-        <!-- Dark/Light Theme Toggle Button -->
         <a class="sidebar-link" id="themeToggleBtn">
             <img src="https://lh3.googleusercontent.com/d/1YBgjM8tmNOhDYiBNRkbwl7ojEivZijQF" class="sidebar-icon" id="themeIcon" alt="Theme">
             <span id="themeText">Dark Mode</span>
@@ -1039,11 +923,7 @@ body{
             <img src="https://lh3.googleusercontent.com/d/1YBgjM8tmNOhDYiBNRkbwl7ojEivZijQF" class="sidebar-icon" alt="Settings">
             Settings
         </a>
-        <a href="#" class="sidebar-link">
-            <img src="https://lh3.googleusercontent.com/d/1Ni2_RR8LCgw6JCwU_raNQPUqD-nqq9ly" class="sidebar-icon" alt="Contact">
-            Contact Us
-        </a>
-        <!-- Logout Link (Appears when logged in) -->
+        <!-- Logout Link -->
         <a class="sidebar-link" id="logoutSidebarLink" style="display: none; color: #ef4444; border-color: rgba(239, 68, 68, 0.3);">
             <img src="https://lh3.googleusercontent.com/d/1Ni2_RR8LCgw6JCwU_raNQPUqD-nqq9ly" class="sidebar-icon" alt="Logout">
             Logout
@@ -1052,9 +932,6 @@ body{
 </div>
 
 <script>
-    // -------------------------------------------------------------
-    // ⚙️ FIREBASE CONFIGURATION
-    // -------------------------------------------------------------
     const firebaseConfig = {
       apiKey: "AIzaSyDI7yuJx1COt5OeHx8L9TWwdLRXSj1MqZo",
       authDomain: "playtime-f5bd9.firebaseapp.com",
@@ -1091,46 +968,38 @@ body{
     const sidebarUserStatus = document.getElementById('sidebarUserStatus');
     const logoutSidebarLink = document.getElementById('logoutSidebarLink');
 
+    // Firebase Auth State Observer
     auth.onAuthStateChanged((user) => {
-        if (user && user.email) {
-            const userEmail = user.email.toLowerCase();
-            const userName = user.displayName ? user.displayName : userEmail.split('@')[0];
+        if (user) {
+            const userEmail = user.email ? user.email.toLowerCase() : "";
+            const userName = user.displayName ? user.displayName : (userEmail ? userEmail.split('@')[0] : "User");
             const userPhoto = user.photoURL ? user.photoURL : "https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg";
 
-            // Hide main header login button
-            loginBtn.style.display = 'none';
+            // हेडर से लॉगिन बटन हटाएं
+            if (loginBtn) loginBtn.style.display = 'none';
 
-            // Show user profile box in sidebar
-            sidebarUserProfile.style.display = 'flex';
-            sidebarUserAvatar.src = userPhoto;
-            sidebarUserName.innerText = userName;
-            logoutSidebarLink.style.display = 'flex';
+            // साइडबार में यूजर प्रोफाइल और फोटो दिखाएं
+            if (sidebarUserProfile) sidebarUserProfile.style.display = 'flex';
+            if (sidebarUserAvatar) sidebarUserAvatar.src = userPhoto;
+            if (sidebarUserName) sidebarUserName.innerText = userName;
+            if (logoutSidebarLink) logoutSidebarLink.style.display = 'flex';
 
-            if (allowedVIPEmails.includes(userEmail)) {
+            if (userEmail && allowedVIPEmails.includes(userEmail)) {
                 activateVipAccess(userName.split(' ')[0]);
             } else {
-                sidebarUserStatus.innerText = "Member";
+                if (sidebarUserStatus) sidebarUserStatus.innerText = "Member";
                 isUnlocked = true;
             }
+        } else {
+            if (loginBtn) loginBtn.style.display = 'flex';
+            if (sidebarUserProfile) sidebarUserProfile.style.display = 'none';
+            if (logoutSidebarLink) logoutSidebarLink.style.display = 'none';
         }
     });
 
     loginBtn.addEventListener('click', () => {
         const provider = new firebase.auth.GoogleAuthProvider();
         auth.signInWithPopup(provider)
-            .then((result) => {
-                const user = result.user;
-                const userEmail = user && user.email ? user.email.toLowerCase() : "";
-                const userName = user && user.displayName ? user.displayName : "User";
-
-                if (userEmail && allowedVIPEmails.includes(userEmail)) {
-                    activateVipAccess(userName.split(' ')[0]);
-                    alert("✨ बधाई हो! आपको वेबसाइट का फुल VIP एक्सेस मिल गया है।");
-                } else {
-                    alert("Google Login Successful!");
-                    location.reload();
-                }
-            })
             .catch((error) => {
                 console.error("Login Error:", error);
                 alert("Login failed: " + error.message);
@@ -1147,10 +1016,10 @@ body{
     function activateVipAccess(name) {
         isVipUser = true;
         isUnlocked = true;
-        sidebarUserStatus.innerText = "👑 VIP Member";
-        vipBadgeTag.style.display = 'inline-block';
-        goldenAccessBtn.style.display = 'none'; 
-        countdownBox.style.display = 'none';
+        if (sidebarUserStatus) sidebarUserStatus.innerText = "👑 VIP Member";
+        if (vipBadgeTag) vipBadgeTag.style.display = 'inline-block';
+        if (goldenAccessBtn) goldenAccessBtn.style.display = 'none'; 
+        if (countdownBox) countdownBox.style.display = 'none';
     }
 
     goldenAccessBtn.addEventListener('click', () => {
@@ -1175,7 +1044,6 @@ body{
                     isUnlocked = false;
                 }
                 countdownBox.style.display = 'none';
-                
                 closeTheaterMode();
                 stopAllVideos();
                 expiredModalOverlay.classList.add('active');
@@ -1239,7 +1107,6 @@ body{
     });
 
     const allVideos = document.querySelectorAll('video');
-
     const theaterOverlay = document.getElementById('theaterOverlay');
     const theaterCloseBtn = document.getElementById('theaterCloseBtn');
     const theaterVideoSlot = document.getElementById('theaterVideoSlot');
@@ -1305,13 +1172,8 @@ body{
         stopAllVideos(); 
     });
 
-    nextPageBtn.addEventListener('click', () => {
-        alert("Next page feature coming soon!");
-    });
-
-    girlsNextPageBtn.addEventListener('click', () => {
-        alert("Next page feature coming soon!");
-    });
+    nextPageBtn.addEventListener('click', () => alert("Next page feature coming soon!"));
+    girlsNextPageBtn.addEventListener('click', () => alert("Next page feature coming soon!"));
 
     function handleVideoPlayAttempt(targetId, e) {
         e.stopPropagation();
@@ -1320,7 +1182,6 @@ body{
             return;
         }
         
-        stopAllWidgets = false;
         stopAllVideos();
         activeVideoElement = document.getElementById(targetId);
         originalParentContainer = activeVideoElement.parentElement;
@@ -1333,17 +1194,11 @@ body{
     }
 
     customPlayBtns.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            const targetId = btn.getAttribute('data-video');
-            handleVideoPlayAttempt(targetId, e);
-        });
+        btn.addEventListener('click', (e) => handleVideoPlayAttempt(btn.getAttribute('data-video'), e));
     });
 
     customFsBtns.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            const targetId = btn.getAttribute('data-video');
-            handleVideoPlayAttempt(targetId, e);
-        });
+        btn.addEventListener('click', (e) => handleVideoPlayAttempt(btn.getAttribute('data-video'), e));
     });
 
     function closeTheaterMode() {
@@ -1359,16 +1214,13 @@ body{
 
     theaterCloseBtn.addEventListener('click', closeTheaterMode);
     theaterOverlay.addEventListener('click', (e) => {
-        if (e.target === theaterOverlay) {
-            closeTheaterMode();
-        }
+        if (e.target === theaterOverlay) closeTheaterMode();
     });
 
     menuHomeLink.addEventListener('click', () => {
         closeTheaterMode();
         instaView.classList.remove('active');
         girlsView.classList.remove('active');
-    
         homeView.classList.add('active');
         sidebar.classList.remove('active');
         overlay.classList.remove('active');
