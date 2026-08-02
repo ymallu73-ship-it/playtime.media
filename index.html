@@ -736,6 +736,47 @@ body{
     object-fit: cover;
 }
 
+/* --- User Profile Item in Sidebar --- */
+.sidebar-user-profile {
+    display: none;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    margin-bottom: 12px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+.sidebar-user-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid var(--primary-color);
+}
+
+.sidebar-user-info {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.sidebar-user-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sidebar-user-status {
+    font-size: 11px;
+    color: var(--primary-color);
+}
+
 .overlay {
     position: fixed;
     top: 0;
@@ -763,6 +804,7 @@ body{
     </div>
 
     <div class="header-right">
+        <!-- Google Login Button (Hides automatically on login) -->
         <button class="google-login-btn" id="loginBtn">
             <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
             <span id="loginBtnText">Login</span>
@@ -969,6 +1011,16 @@ body{
         <h2>Menu</h2>
         <button class="close-btn" id="closeBtn">×</button>
     </div>
+
+    <!-- Logged-in User Profile Card inside Sidebar -->
+    <div class="sidebar-user-profile" id="sidebarUserProfile">
+        <img src="" id="sidebarUserAvatar" class="sidebar-user-avatar" alt="User Photo">
+        <div class="sidebar-user-info">
+            <span class="sidebar-user-name" id="sidebarUserName">User</span>
+            <span class="sidebar-user-status" id="sidebarUserStatus">Online / Member</span>
+        </div>
+    </div>
+
     <div class="sidebar-links">
         <a class="sidebar-link" id="menuHomeLink">
             <img src="https://lh3.googleusercontent.com/d/1nW4xgA8V9kmLIrPI1N_A6xMhJsO6pdHp" class="sidebar-icon" alt="Home">
@@ -990,6 +1042,11 @@ body{
         <a href="#" class="sidebar-link">
             <img src="https://lh3.googleusercontent.com/d/1Ni2_RR8LCgw6JCwU_raNQPUqD-nqq9ly" class="sidebar-icon" alt="Contact">
             Contact Us
+        </a>
+        <!-- Logout Link (Appears when logged in) -->
+        <a class="sidebar-link" id="logoutSidebarLink" style="display: none; color: #ef4444; border-color: rgba(239, 68, 68, 0.3);">
+            <img src="https://lh3.googleusercontent.com/d/1Ni2_RR8LCgw6JCwU_raNQPUqD-nqq9ly" class="sidebar-icon" alt="Logout">
+            Logout
         </a>
     </div>
 </div>
@@ -1026,45 +1083,50 @@ body{
     const expiredLaterBtn = document.getElementById('expiredLaterBtn');
     const expiredRenewBtn = document.getElementById('expiredRenewBtn');
     const loginBtn = document.getElementById('loginBtn');
-    const loginBtnText = document.getElementById('loginBtnText');
     const vipBadgeTag = document.getElementById('vipBadgeTag');
+    
+    const sidebarUserProfile = document.getElementById('sidebarUserProfile');
+    const sidebarUserAvatar = document.getElementById('sidebarUserAvatar');
+    const sidebarUserName = document.getElementById('sidebarUserName');
+    const sidebarUserStatus = document.getElementById('sidebarUserStatus');
+    const logoutSidebarLink = document.getElementById('logoutSidebarLink');
 
     auth.onAuthStateChanged((user) => {
         if (user && user.email) {
             const userEmail = user.email.toLowerCase();
-            const userName = user.displayName ? user.displayName.split(' ')[0] : userEmail.split('@')[0];
+            const userName = user.displayName ? user.displayName : userEmail.split('@')[0];
+            const userPhoto = user.photoURL ? user.photoURL : "https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg";
+
+            // Hide main header login button
+            loginBtn.style.display = 'none';
+
+            // Show user profile box in sidebar
+            sidebarUserProfile.style.display = 'flex';
+            sidebarUserAvatar.src = userPhoto;
+            sidebarUserName.innerText = userName;
+            logoutSidebarLink.style.display = 'flex';
 
             if (allowedVIPEmails.includes(userEmail)) {
-                activateVipAccess(userName);
+                activateVipAccess(userName.split(' ')[0]);
             } else {
-                loginBtnText.innerText = userName;
+                sidebarUserStatus.innerText = "Member";
                 isUnlocked = true;
             }
         }
     });
 
     loginBtn.addEventListener('click', () => {
-        const currentUser = auth.currentUser;
-        if (currentUser) {
-            auth.signOut().then(() => {
-                alert("Logged out successfully!");
-                location.reload();
-            });
-            return;
-        }
-
         const provider = new firebase.auth.GoogleAuthProvider();
         auth.signInWithPopup(provider)
             .then((result) => {
                 const user = result.user;
                 const userEmail = user && user.email ? user.email.toLowerCase() : "";
-                const userName = user && user.displayName ? user.displayName.split(' ')[0] : (userEmail ? userEmail.split('@')[0] : "User");
+                const userName = user && user.displayName ? user.displayName : "User";
 
                 if (userEmail && allowedVIPEmails.includes(userEmail)) {
-                    activateVipAccess(userName);
+                    activateVipAccess(userName.split(' ')[0]);
                     alert("✨ बधाई हो! आपको वेबसाइट का फुल VIP एक्सेस मिल गया है।");
                 } else {
-                    loginBtnText.innerText = userName;
                     alert("Google Login Successful!");
                     location.reload();
                 }
@@ -1075,10 +1137,17 @@ body{
             });
     });
 
+    logoutSidebarLink.addEventListener('click', () => {
+        auth.signOut().then(() => {
+            alert("Logged out successfully!");
+            location.reload();
+        });
+    });
+
     function activateVipAccess(name) {
         isVipUser = true;
         isUnlocked = true;
-        loginBtnText.innerText = name + " (VIP)";
+        sidebarUserStatus.innerText = "👑 VIP Member";
         vipBadgeTag.style.display = 'inline-block';
         goldenAccessBtn.style.display = 'none'; 
         countdownBox.style.display = 'none';
