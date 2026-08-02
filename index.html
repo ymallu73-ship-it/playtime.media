@@ -659,7 +659,7 @@ body{
     object-fit: cover;
 }
 
-/* Sidebar User Profile Card */
+/* Sidebar User Profile Card (Default Normal User) */
 .sidebar-user-profile {
     display: none;
     align-items: center;
@@ -677,6 +677,18 @@ body{
     border-radius: 50%;
     object-fit: cover;
     border: 1px solid var(--primary-color);
+}
+
+/* VIP Golden Border Style for Profile Avatar */
+.sidebar-user-profile.vip-profile-card {
+    background: linear-gradient(135deg, rgba(191, 149, 63, 0.15), rgba(252, 204, 102, 0.1));
+    border: 1.5px solid #bf953f;
+    box-shadow: 0 0 12px rgba(191, 149, 63, 0.25);
+}
+
+.sidebar-user-profile.vip-profile-card .sidebar-user-avatar {
+    border: 2px solid #bf953f;
+    box-shadow: 0 0 8px rgba(191, 149, 63, 0.5);
 }
 
 .sidebar-user-info {
@@ -697,6 +709,15 @@ body{
 .sidebar-user-status {
     font-size: 11px;
     color: var(--primary-color);
+}
+
+.sidebar-user-profile.vip-profile-card .sidebar-user-status {
+    color: #b38728;
+    font-weight: 700;
+}
+
+[data-theme="dark"] .sidebar-user-profile.vip-profile-card .sidebar-user-status {
+    color: #fbf5b7;
 }
 
 .overlay {
@@ -726,7 +747,7 @@ body{
     </div>
 
     <div class="header-right">
-        <!-- Google Login Button (Hides automatically when logged in) -->
+        <!-- Google Login Button -->
         <button class="google-login-btn" id="loginBtn">
             <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
             <span id="loginBtnText">Login</span>
@@ -950,7 +971,6 @@ body{
         "broweop1@gmail.com"
     ];
 
-
     let isUnlocked = false;
     let isVipUser = false;
     let countdownInterval = null;
@@ -977,25 +997,43 @@ body{
             const userName = user.displayName ? user.displayName : (userEmail ? userEmail.split('@')[0] : "User");
             const userPhoto = user.photoURL ? user.photoURL : "https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg";
 
-            // हेडर से लॉगिन बटन हटाएं
+            // हेडर से लॉगिन बटन छिपाएं
             if (loginBtn) loginBtn.style.display = 'none';
 
-            // साइडबार में यूजर प्रोफाइल और फोटो दिखाएं
+            // साइडबार में यूजर प्रोफाइल दिखाएं
             if (sidebarUserProfile) sidebarUserProfile.style.display = 'flex';
             if (sidebarUserAvatar) sidebarUserAvatar.src = userPhoto;
             if (sidebarUserName) sidebarUserName.innerText = userName;
             if (logoutSidebarLink) logoutSidebarLink.style.display = 'flex';
 
             if (userEmail && allowedVIPEmails.includes(userEmail)) {
-                activateVipAccess(userName.split(' ')[0]);
-            } else {
-                if (sidebarUserStatus) sidebarUserStatus.innerText = "Member";
+                // --- VIP User Logic ---
+                isVipUser = true;
                 isUnlocked = true;
+                if (sidebarUserStatus) sidebarUserStatus.innerText = "👑 VIP Member";
+                if (vipBadgeTag) vipBadgeTag.style.display = 'inline-block';
+                
+                // VIP के लिए गोल्डन बॉर्डर और स्टाइल लागू करें
+                sidebarUserProfile.classList.add('vip-profile-card');
+
+                // VIP के लिए फ्री एक्सेस बैनर और टाइमर पूरी तरह छुपाएं
+                if (goldenAccessBtn) goldenAccessBtn.style.display = 'none';
+                if (countdownBox) countdownBox.style.display = 'none';
+            } else {
+                // --- Normal User Logic ---
+                if (sidebarUserStatus) sidebarUserStatus.innerText = "Member";
+                sidebarUserProfile.classList.remove('vip-profile-card');
+                if (vipBadgeTag) vipBadgeTag.style.display = 'none';
+                isUnlocked = false;
             }
         } else {
             if (loginBtn) loginBtn.style.display = 'flex';
             if (sidebarUserProfile) sidebarUserProfile.style.display = 'none';
             if (logoutSidebarLink) logoutSidebarLink.style.display = 'none';
+            if (vipBadgeTag) vipBadgeTag.style.display = 'none';
+            sidebarUserProfile.classList.remove('vip-profile-card');
+            isUnlocked = false;
+            isVipUser = false;
         }
     });
 
@@ -1015,17 +1053,8 @@ body{
         });
     });
 
-    function activateVipAccess(name) {
-        isVipUser = true;
-        isUnlocked = true;
-        if (sidebarUserStatus) sidebarUserStatus.innerText = "👑 VIP Member";
-        if (vipBadgeTag) vipBadgeTag.style.display = 'inline-block';
-        if (goldenAccessBtn) goldenAccessBtn.style.display = 'none'; 
-        if (countdownBox) countdownBox.style.display = 'none';
-    }
-
     goldenAccessBtn.addEventListener('click', () => {
-        if (isUnlocked) return;
+        if (isVipUser || isUnlocked) return;
         
         isUnlocked = true;
         goldenAccessBtn.style.opacity = '0.7';
@@ -1044,11 +1073,12 @@ body{
                 clearInterval(countdownInterval);
                 if (!isVipUser) {
                     isUnlocked = false;
+                    closeTheaterMode();
+                    stopAllVideos();
+                    // VIP यूजर को कभी भी यह एक्सपायर्ड पॉप-अप नहीं दिखेगा
+                    expiredModalOverlay.classList.add('active');
                 }
                 countdownBox.style.display = 'none';
-                closeTheaterMode();
-                stopAllVideos();
-                expiredModalOverlay.classList.add('active');
 
                 goldenAccessBtn.style.opacity = '1';
                 goldenAccessBtn.querySelector('h3').innerText = "✨ Get 10 Sec Free Access ✨";
@@ -1175,7 +1205,7 @@ body{
     });
 
     nextPageBtn.addEventListener('click', () => alert("Next page feature coming soon!"));
-    girlsNextPageBtn.addEventListener('click', () => alert("Next page feature coming soon!"));
+    girlsNextPageBtn.addEventListener('click', () => alert("Next page function coming soon!"));
 
     function handleVideoPlayAttempt(targetId, e) {
         e.stopPropagation();
