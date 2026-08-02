@@ -659,7 +659,7 @@ body{
     object-fit: cover;
 }
 
-/* Sidebar User Profile Card (Default Normal User) */
+/* Sidebar User Profile Card */
 .sidebar-user-profile {
     display: none;
     align-items: center;
@@ -997,34 +997,32 @@ body{
             const userName = user.displayName ? user.displayName : (userEmail ? userEmail.split('@')[0] : "User");
             const userPhoto = user.photoURL ? user.photoURL : "https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg";
 
-            // हेडर से लॉगिन बटन छिपाएं
             if (loginBtn) loginBtn.style.display = 'none';
 
-            // साइडबार में यूजर प्रोफाइल दिखाएं
             if (sidebarUserProfile) sidebarUserProfile.style.display = 'flex';
             if (sidebarUserAvatar) sidebarUserAvatar.src = userPhoto;
             if (sidebarUserName) sidebarUserName.innerText = userName;
             if (logoutSidebarLink) logoutSidebarLink.style.display = 'flex';
 
             if (userEmail && allowedVIPEmails.includes(userEmail)) {
-                // --- VIP User Logic ---
+                // --- VIP User Logic (परफेक्ट फिक्स) ---
                 isVipUser = true;
                 isUnlocked = true;
-                if (sidebarUserStatus) sidebarUserStatus.innerText = "👑 VIP Member";
+                if (sidebarUserStatus) sidebarUserStatus.innerText = "👑 Exclusive VIP Member";
                 if (vipBadgeTag) vipBadgeTag.style.display = 'inline-block';
                 
-                // VIP के लिए गोल्डन बॉर्डर और स्टाइल लागू करें
                 sidebarUserProfile.classList.add('vip-profile-card');
 
-                // VIP के लिए फ्री एक्सेस बैनर और टाइमर पूरी तरह छुपाएं
+                // VIP के लिए एक्सेस बटन और टाइमर पूरी तरह गायब रहेंगे
                 if (goldenAccessBtn) goldenAccessBtn.style.display = 'none';
                 if (countdownBox) countdownBox.style.display = 'none';
             } else {
                 // --- Normal User Logic ---
-                if (sidebarUserStatus) sidebarUserStatus.innerText = "Member";
+                if (sidebarUserStatus) sidebarUserStatus.innerText = "Free Member";
                 sidebarUserProfile.classList.remove('vip-profile-card');
                 if (vipBadgeTag) vipBadgeTag.style.display = 'none';
                 isUnlocked = false;
+                if (goldenAccessBtn) goldenAccessBtn.style.display = 'block';
             }
         } else {
             if (loginBtn) loginBtn.style.display = 'flex';
@@ -1034,6 +1032,7 @@ body{
             sidebarUserProfile.classList.remove('vip-profile-card');
             isUnlocked = false;
             isVipUser = false;
+            if (goldenAccessBtn) goldenAccessBtn.style.display = 'block';
         }
     });
 
@@ -1075,7 +1074,6 @@ body{
                     isUnlocked = false;
                     closeTheaterMode();
                     stopAllVideos();
-                    // VIP यूजर को कभी भी यह एक्सपायर्ड पॉप-अप नहीं दिखेगा
                     expiredModalOverlay.classList.add('active');
                 }
                 countdownBox.style.display = 'none';
