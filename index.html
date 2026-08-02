@@ -1,4 +1,4 @@
-<meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -996,7 +996,7 @@ body{
 
 <script>
     // -------------------------------------------------------------
-    // ⚙️ FIREBASE CONFIGURATION (आपका असली कोड यहाँ जोड़ दिया गया है)
+    // ⚙️ FIREBASE CONFIGURATION
     // -------------------------------------------------------------
     const firebaseConfig = {
       apiKey: "AIzaSyDI7yuJx1COt5OeHx8L9TWwdLRXSj1MqZo",
@@ -1008,11 +1008,9 @@ body{
       measurementId: "G-VRDB9VYM7B"
     };
 
-    // Firebase इनिशियलाइज करें
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
 
-    // 👑 VIP व्हitelist ईमेल लिस्ट (यहाँ अपनी जीमेल आईडी जोड़ लें)
     const allowedVIPEmails = [
         "your-email@gmail.com"
     ];
@@ -1031,9 +1029,8 @@ body{
     const loginBtnText = document.getElementById('loginBtnText');
     const vipBadgeTag = document.getElementById('vipBadgeTag');
 
-    // चेक करें कि क्या यूजर पहले से लॉग-इन है या नहीं
     auth.onAuthStateChanged((user) => {
-        if (user) {
+        if (user && user.email) {
             const userEmail = user.email.toLowerCase();
             const userName = user.displayName ? user.displayName.split(' ')[0] : userEmail.split('@')[0];
 
@@ -1046,7 +1043,6 @@ body{
         }
     });
 
-    // गूगल लॉगिन बटन पर क्लिक होने पर असली Google Pop-up खुलेगा
     loginBtn.addEventListener('click', () => {
         const currentUser = auth.currentUser;
         if (currentUser) {
@@ -1061,10 +1057,10 @@ body{
         auth.signInWithPopup(provider)
             .then((result) => {
                 const user = result.user;
-                const userEmail = user.email.toLowerCase();
-                const userName = user.displayName ? user.displayName.split(' ')[0] : userEmail.split('@')[0];
+                const userEmail = user && user.email ? user.email.toLowerCase() : "";
+                const userName = user && user.displayName ? user.displayName.split(' ')[0] : (userEmail ? userEmail.split('@')[0] : "User");
 
-                if (allowedVIPEmails.includes(userEmail)) {
+                if (userEmail && allowedVIPEmails.includes(userEmail)) {
                     activateVipAccess(userName);
                     alert("✨ बधाई हो! आपको वेबसाइट का फुल VIP एक्सेस मिल गया है।");
                 } else {
@@ -1255,6 +1251,7 @@ body{
             return;
         }
         
+        stopAllWidgets = false;
         stopAllVideos();
         activeVideoElement = document.getElementById(targetId);
         originalParentContainer = activeVideoElement.parentElement;
