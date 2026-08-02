@@ -1024,7 +1024,6 @@ body{
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
 
-    // आपके आधिकारिक वीआईपी कोड्स (11 से 20)
     const validCodes = [
         "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"
     ];
@@ -1106,7 +1105,6 @@ body{
         }
     });
 
-    // अपडेटेड और स्मार्ट रिडीम लॉजिक जो लोकल स्टोरेज और ऑथेंटिकेशन दोनों से ईमेल ढूंढ लेगा
     redeemCodeBtn.addEventListener('click', () => {
         let userEmail = "";
         const currentUser = auth.currentUser;
@@ -1114,7 +1112,6 @@ body{
         if (currentUser && currentUser.email) {
             userEmail = currentUser.email.toLowerCase().trim();
         } else {
-            // यदि auth.currentUser तुरंत नहीं मिला, तो Firebase लोकल स्टोरेज से ईमेल निकाल लें
             for (let key in localStorage) {
                 if (key.startsWith("firebase:authUser:")) {
                     try {
@@ -1129,7 +1126,7 @@ body{
         }
 
         if (!userEmail) {
-            alert("⚠️ कृपया सुनिश्चित करें कि आप Google से ठीक से लॉग इन हैं। यदि फिर भी दिक्कत आए, तो एक बार लॉग आउट करके दोबारा लॉगिन करें।");
+            alert("⚠️ कृपया सुनिश्चित करें कि आप Google से ठीक से लॉग इन हैं।");
             return;
         }
 
@@ -1146,7 +1143,7 @@ body{
         }
 
         if (usedCodesMap[enteredCode]) {
-            alert("❌ यह कोड पहले ही इस्तेमाल किया जा चुका है! यह दोबारा उपयोग नहीं हो सकता।");
+            alert("❌ यह कोड पहले ही इस्तेमाल किया जा चुका है!");
             return;
         }
 
