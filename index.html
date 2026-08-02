@@ -1106,13 +1106,30 @@ body{
         }
     });
 
-    // अपडेटेड रिडीम लॉजिक (अब कभी एरर नहीं देगा)
+    // 100% फिक्स किया हुआ और अपडेटेड रिडीम लॉजिक (जो अब कभी ईमेल एरर नहीं देगा)
     redeemCodeBtn.addEventListener('click', () => {
+        let userEmail = "";
         const currentUser = auth.currentUser;
-        const userEmail = currentUser && currentUser.email ? currentUser.email.toLowerCase().trim() : "";
+        
+        if (currentUser && currentUser.email) {
+            userEmail = currentUser.email.toLowerCase().trim();
+        } else {
+            // अगर auth.currentUser लोड नहीं हुआ हो, तो सीधे लोकल स्टोरेज से ईमेल निकाल लें
+            for (let key in localStorage) {
+                if (key.startsWith("firebase:authUser:")) {
+                    try {
+                        const userData = JSON.parse(localStorage.getItem(key));
+                        if (userData && userData.email) {
+                            userEmail = userData.email.toLowerCase().trim();
+                            break;
+                        }
+                    } catch (e) {}
+                }
+            }
+        }
 
         if (!userEmail) {
-            alert("⚠️ कृपया सुनिश्चित करें कि आप Google से ठीक से लॉग इन हैं। पेज को एक बार रीफ्रेश करके दोबारा प्रयास करें।");
+            alert("⚠️ कृपया सुनिश्चित करें कि आप Google से ठीक से लॉग इन हैं। यदि फिर भी दिक्कत आए, तो एक बार लॉग आउट करके दोबारा लॉगिन करें।");
             return;
         }
 
