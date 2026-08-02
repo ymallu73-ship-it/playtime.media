@@ -971,8 +971,8 @@ body{
         "broweop1@gmail.com"
     ];
 
-    let isUnlocked = false;
     let isVipUser = false;
+    let isUnlocked = false;
     let countdownInterval = null;
 
     const goldenAccessBtn = document.getElementById('goldenAccessBtn');
@@ -1005,7 +1005,7 @@ body{
             if (logoutSidebarLink) logoutSidebarLink.style.display = 'flex';
 
             if (userEmail && allowedVIPEmails.includes(userEmail)) {
-                // --- VIP User Logic (परफेक्ट फिक्स) ---
+                // --- VIP USER HARDCODED OVERRIDE ---
                 isVipUser = true;
                 isUnlocked = true;
                 if (sidebarUserStatus) sidebarUserStatus.innerText = "👑 Exclusive VIP Member";
@@ -1017,11 +1017,12 @@ body{
                 if (goldenAccessBtn) goldenAccessBtn.style.display = 'none';
                 if (countdownBox) countdownBox.style.display = 'none';
             } else {
-                // --- Normal User Logic ---
+                // --- NORMAL USER ---
+                isVipUser = false;
+                isUnlocked = false;
                 if (sidebarUserStatus) sidebarUserStatus.innerText = "Free Member";
                 sidebarUserProfile.classList.remove('vip-profile-card');
                 if (vipBadgeTag) vipBadgeTag.style.display = 'none';
-                isUnlocked = false;
                 if (goldenAccessBtn) goldenAccessBtn.style.display = 'block';
             }
         } else {
@@ -1030,8 +1031,8 @@ body{
             if (logoutSidebarLink) logoutSidebarLink.style.display = 'none';
             if (vipBadgeTag) vipBadgeTag.style.display = 'none';
             sidebarUserProfile.classList.remove('vip-profile-card');
-            isUnlocked = false;
             isVipUser = false;
+            isUnlocked = false;
             if (goldenAccessBtn) goldenAccessBtn.style.display = 'block';
         }
     });
@@ -1053,7 +1054,7 @@ body{
     });
 
     goldenAccessBtn.addEventListener('click', () => {
-        if (isVipUser || isUnlocked) return;
+        if (isVipUser) return;
         
         isUnlocked = true;
         goldenAccessBtn.style.opacity = '0.7';
@@ -1207,7 +1208,10 @@ body{
 
     function handleVideoPlayAttempt(targetId, e) {
         e.stopPropagation();
-        if (!isUnlocked) {
+        
+        // --- 100% SECURE VIP CHECK ---
+        // अगर यूजर VIP है, तो इसे बिना किसी शर्त के वीडियो देखने दें (पॉपअप कभी नहीं आएगा)
+        if (!isVipUser && !isUnlocked) {
             expiredModalOverlay.classList.add('active');
             return;
         }
