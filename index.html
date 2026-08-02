@@ -59,11 +59,11 @@ body{
     transition: background 0.3s ease, color 0.3s ease;
 }
 
-/* --- Golden Access Button --- */
+/* --- Golden Access Button & Redeem Box --- */
 .golden-access-banner {
     width: 100%;
     max-width: 320px;
-    margin: 0 auto 20px auto;
+    margin: 0 auto 15px auto;
     background: linear-gradient(135deg, #bf953f, #fc6, #b38728, #fbf5b7, #aa771c);
     background-size: 300% 300%;
     animation: goldShine 5s ease infinite;
@@ -102,6 +102,55 @@ body{
 
 [data-theme="dark"] .golden-btn-inner h3 {
     color: #fbf5b7;
+}
+
+/* VIP Code Redeem Section Container */
+.vip-redeem-container {
+    width: 100%;
+    max-width: 320px;
+    margin: 0 auto 20px auto;
+    background: var(--card-bg);
+    border: 1.5px solid #bf953f;
+    border-radius: 12px;
+    padding: 12px;
+    box-shadow: 0 4px 12px rgba(191, 149, 63, 0.2);
+    text-align: center;
+}
+
+.vip-redeem-container h4 {
+    font-size: 13px;
+    color: #b38728;
+    margin-bottom: 8px;
+    font-weight: 700;
+}
+
+.vip-input-row {
+    display: flex;
+    gap: 8px;
+}
+
+.vip-code-input {
+    flex: 1;
+    height: 38px;
+    background: var(--bg-color);
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    padding: 0 10px;
+    color: var(--text-color);
+    font-size: 12px;
+    outline: none;
+}
+
+.vip-redeem-btn {
+    height: 38px;
+    background: linear-gradient(135deg, #bf953f, #b38728);
+    border: none;
+    border-radius: 8px;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 0 12px;
+    cursor: pointer;
 }
 
 .countdown-timer-box {
@@ -773,6 +822,15 @@ body{
             </div>
         </div>
 
+        <!-- VIP Code Redeem Box (नया जोड़ा गया सेक्शन) -->
+        <div class="vip-redeem-container" id="vipRedeemBox" style="display: none;">
+            <h4>👑 Enter VIP Code (1 Month Pass)</h4>
+            <div class="vip-input-row">
+                <input type="text" id="vipCodeInput" class="vip-code-input" placeholder="Enter code here...">
+                <button id="redeemCodeBtn" class="vip-redeem-btn">Redeem</button>
+            </div>
+        </div>
+
         <div class="countdown-timer-box" id="countdownBox">
             ⏱️ Free Access Remaining: <span id="timerDisplay">00:10</span>
         </div>
@@ -894,10 +952,10 @@ body{
             </svg>
         </div>
         <h2>Premium Expired</h2>
-        <p>Your premium plan has ended. Renew now to continue enjoying unlimited plays.</p>
+        <p>Your 1-month VIP access has ended or requires a new code. Please redeem a fresh code to continue.</p>
         <div class="expired-btns-row">
             <button class="expired-btn-later" id="expiredLaterBtn">Maybe Later</button>
-            <button class="expired-btn-renew" id="expiredRenewBtn">👑 Renew</button>
+            <button class="expired-btn-renew" id="expiredRenewBtn">👑 Enter Code</button>
         </div>
     </div>
 </div>
@@ -966,15 +1024,17 @@ body{
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
 
-    // यहाँ अपनी ईमेल आईडी चेक कर लें (ymallu73@gmail.com या जो भी वीआईपी ईमेल हो)
-    const allowedVIPEmails = [
-        "ymallu73@gmail.com",
-        "broweop1@gmail.com"
+    // आपके दिए गए 10 आधिकारिक वीआईपी कोड्स
+    const validCodes = [
+        "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"
     ];
 
     let countdownInterval = null;
 
     const goldenAccessBtn = document.getElementById('goldenAccessBtn');
+    const vipRedeemBox = document.getElementById('vipRedeemBox');
+    const vipCodeInput = document.getElementById('vipCodeInput');
+    const redeemCodeBtn = document.getElementById('redeemCodeBtn');
     const countdownBox = document.getElementById('countdownBox');
     const timerDisplay = document.getElementById('timerDisplay');
     const expiredModalOverlay = document.getElementById('expiredModalOverlay');
@@ -989,7 +1049,27 @@ body{
     const sidebarUserStatus = document.getElementById('sidebarUserStatus');
     const logoutSidebarLink = document.getElementById('logoutSidebarLink');
 
-    // Firebase Auth State Observer (डायरेक्ट वीआईपी लॉजिक)
+    // स्टोरेज से यूज्ड कोड्स और बाइंडेड ईमेल्स लोड करें (या नया ऑब्जेक्ट बनाएं)
+    let usedCodesMap = JSON.parse(localStorage.getItem('playtime_used_codes') || "{}");
+    let userVipData = JSON.parse(localStorage.getItem('playtime_vip_users') || "{}");
+
+    // चेक करें कि क्या यूजर का वीआईपी प्लान अभी भी 30 दिन के अंदर वैलिड है या नहीं
+    function checkUserVipStatus(userEmail) {
+        if (!userVipData[userEmail]) return false;
+        let expiryTime = userVipData[userEmail];
+        let currentTime = new Date().getTime();
+        
+        if (currentTime < expiryTime) {
+            return true; // अभी वैलिड है
+        } else {
+            // एक्सपायर हो गया
+            delete userVipData[userEmail];
+            localStorage.setItem('playtime_vip_users', JSON.stringify(userVipData));
+            return false;
+        }
+    }
+
+    // Firebase Auth State Observer
     auth.onAuthStateChanged((user) => {
         if (user) {
             const userEmail = user.email ? user.email.toLowerCase().trim() : "";
@@ -997,14 +1077,12 @@ body{
             const userPhoto = user.photoURL ? user.photoURL : "https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg";
 
             if (loginBtn) loginBtn.style.display = 'none';
-
             if (sidebarUserProfile) sidebarUserProfile.style.display = 'flex';
             if (sidebarUserAvatar) sidebarUserAvatar.src = userPhoto;
             if (sidebarUserName) sidebarUserName.innerText = userName;
             if (logoutSidebarLink) logoutSidebarLink.style.display = 'flex';
 
-            // चेक करें कि ईमेल वीआईपी लिस्ट में है या नहीं
-            let isUserVip = allowedVIPEmails.includes(userEmail);
+            let isUserVip = checkUserVipStatus(userEmail);
 
             if (isUserVip) {
                 // --- VIP USER SETTINGS ---
@@ -1012,17 +1090,16 @@ body{
                 if (vipBadgeTag) vipBadgeTag.style.display = 'inline-block';
                 sidebarUserProfile.classList.add('vip-profile-card');
 
-                // वीआईपी के लिए टाइमर और एक्सेस बैनर हमेशा गायब रहेंगे
                 if (goldenAccessBtn) goldenAccessBtn.style.display = 'none';
+                if (vipRedeemBox) vipRedeemBox.style.display = 'none';
                 if (countdownBox) countdownBox.style.display = 'none';
-                console.log("VIP Access Granted for: " + userEmail);
             } else {
-                // --- NORMAL USER SETTINGS ---
+                // --- NORMAL USER (VIP CODE CHAHIYE) ---
                 if (sidebarUserStatus) sidebarUserStatus.innerText = "Free Member";
                 sidebarUserProfile.classList.remove('vip-profile-card');
                 if (vipBadgeTag) vipBadgeTag.style.display = 'none';
                 if (goldenAccessBtn) goldenAccessBtn.style.display = 'block';
-                console.log("Normal User Logged In: " + userEmail);
+                if (vipRedeemBox) vipRedeemBox.style.display = 'block'; // कोड डालने का बॉक्स दिखेगा
             }
         } else {
             if (loginBtn) loginBtn.style.display = 'flex';
@@ -1031,12 +1108,57 @@ body{
             if (vipBadgeTag) vipBadgeTag.style.display = 'none';
             if (sidebarUserProfile) sidebarUserProfile.classList.remove('vip-profile-card');
             if (goldenAccessBtn) goldenAccessBtn.style.display = 'block';
+            if (vipRedeemBox) vipRedeemBox.style.display = 'none';
         }
+    });
+
+    // कोड रिडीम करने का बटन लॉजिक
+    redeemCodeBtn.addEventListener('click', () => {
+        const currentUser = auth.currentUser;
+        if (!currentUser || !currentUser.email) {
+            alert("कृपया पहले Google Login करें!");
+            return;
+        }
+
+        const userEmail = currentUser.email.toLowerCase().trim();
+        const enteredCode = vipCodeInput.value.trim();
+
+        if (!enteredCode) {
+            alert("⚠️ कृपया वीआईपी कोड दर्ज करें!");
+            return;
+        }
+
+        // चेक करें कि क्या कोड सही लिस्ट में है या नहीं
+        if (!validCodes.includes(enteredCode)) {
+            alert("❌ गलत कोड! (Invalid VIP Code). कृपया सही कोड डालें।");
+            return;
+        }
+
+        // चेक करें कि क्या यह कोड पहले ही किसी द्वारा इस्तेमाल किया जा चुका है
+        if (usedCodesMap[enteredCode]) {
+            alert("❌ यह कोड पहले ही इस्तेमाल किया जा चुका है! यह दोबारा उपयोग नहीं हो सकता।");
+            return;
+        }
+
+        // कोड सही है और फ्रेश है -> इसे इस जीमेल के साथ बाइंड कर दें और 30 दिन की एक्सपायरी सेट करें (30 दिन = 30 * 24 * 60 * 60 * 1000 ms)
+        let expiryTimestamp = new Date().getTime() + (30 * 24 * 60 * 60 * 1000);
+        
+        usedCodesMap[enteredCode] = userEmail; // कोड पर जीमेल लॉक
+        userVipData[userEmail] = expiryTimestamp; // यूजर की 1 महीने की वैलिडिटी सेव
+
+        localStorage.setItem('playtime_used_codes', JSON.stringify(usedCodesMap));
+        localStorage.setItem('playtime_vip_users', JSON.stringify(userVipData));
+
+        alert("🎉 बधाई हो! वीआईपी एक्सेस 1 महीने के लिए सफलतापूर्व एक्टिव हो गया है!");
+        location.reload(); // पेज रीफ्रेश ताकि वीआईपी फीचर्स तुरंत दिख जाएं
     });
 
     loginBtn.addEventListener('click', () => {
         const provider = new firebase.auth.GoogleAuthProvider();
         auth.signInWithPopup(provider)
+            .then((result) => {
+                // लॉगिन सफल
+            })
             .catch((error) => {
                 console.error("Login Error:", error);
                 alert("Login failed: " + error.message);
@@ -1050,12 +1172,13 @@ body{
         });
     });
 
-    // नॉर्मल यूजर के लिए 10 सेकंड का फ्री एक्सेस
     let isFreeUnlocked = false;
     goldenAccessBtn.addEventListener('click', () => {
         const currentUser = auth.currentUser;
-        if (currentUser && allowedVIPEmails.includes(currentUser.email ? currentUser.email.toLowerCase().trim() : "")) {
-            return; // अगर वीआईपी है तो इसकी जरूरत ही नहीं
+        if (currentUser && currentUser.email) {
+            if (checkUserVipStatus(currentUser.email.toLowerCase().trim())) {
+                return; 
+            }
         }
         
         isFreeUnlocked = true;
@@ -1091,7 +1214,8 @@ body{
     });
 
     expiredRenewBtn.addEventListener('click', () => {
-        alert("Redirecting to renewal gateway...");
+        expiredModalOverlay.classList.remove('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 
     const menuBtn = document.getElementById('menuBtn');
@@ -1213,13 +1337,9 @@ body{
         let isUserVip = false;
         
         if (currentUser && currentUser.email) {
-            const currentEmail = currentUser.email.toLowerCase().trim();
-            if (allowedVIPEmails.includes(currentEmail)) {
-                isUserVip = true;
-            }
+            isUserVip = checkUserVipStatus(currentUser.email.toLowerCase().trim());
         }
 
-        // --- मुख्य जाँच: अगर यूजर वीआईपी नहीं है और 10 सेकंड का फ्री एक्सेस नहीं लिया है, तभी पॉपअप आएगा ---
         if (!isUserVip && !isFreeUnlocked) {
             expiredModalOverlay.classList.add('active');
             return;
@@ -1274,4 +1394,3 @@ body{
 
 </body>
 </html>
-
