@@ -966,13 +966,12 @@ body{
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
 
+    // यहाँ अपनी ईमेल आईडी चेक कर लें (ymallu73@gmail.com या जो भी वीआईपी ईमेल हो)
     const allowedVIPEmails = [
-        "your-email@gmail.com",
-        "ymallu73@gmail.com"
+        "ymallu73@gmail.com",
+        "broweop1@gmail.com"
     ];
 
-    let isVipUser = false;
-    let isUnlocked = false;
     let countdownInterval = null;
 
     const goldenAccessBtn = document.getElementById('goldenAccessBtn');
@@ -990,10 +989,10 @@ body{
     const sidebarUserStatus = document.getElementById('sidebarUserStatus');
     const logoutSidebarLink = document.getElementById('logoutSidebarLink');
 
-    // Firebase Auth State Observer
+    // Firebase Auth State Observer (डायरेक्ट वीआईपी लॉजिक)
     auth.onAuthStateChanged((user) => {
         if (user) {
-            const userEmail = user.email ? user.email.toLowerCase() : "";
+            const userEmail = user.email ? user.email.toLowerCase().trim() : "";
             const userName = user.displayName ? user.displayName : (userEmail ? userEmail.split('@')[0] : "User");
             const userPhoto = user.photoURL ? user.photoURL : "https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg";
 
@@ -1004,35 +1003,33 @@ body{
             if (sidebarUserName) sidebarUserName.innerText = userName;
             if (logoutSidebarLink) logoutSidebarLink.style.display = 'flex';
 
-            if (userEmail && allowedVIPEmails.includes(userEmail)) {
-                // --- VIP USER HARDCODED OVERRIDE ---
-                isVipUser = true;
-                isUnlocked = true;
+            // चेक करें कि ईमेल वीआईपी लिस्ट में है या नहीं
+            let isUserVip = allowedVIPEmails.includes(userEmail);
+
+            if (isUserVip) {
+                // --- VIP USER SETTINGS ---
                 if (sidebarUserStatus) sidebarUserStatus.innerText = "👑 Exclusive VIP Member";
                 if (vipBadgeTag) vipBadgeTag.style.display = 'inline-block';
-                
                 sidebarUserProfile.classList.add('vip-profile-card');
 
-                // VIP के लिए एक्सेस बटन और टाइमर पूरी तरह गायब रहेंगे
+                // वीआईपी के लिए टाइमर और एक्सेस बैनर हमेशा गायब रहेंगे
                 if (goldenAccessBtn) goldenAccessBtn.style.display = 'none';
                 if (countdownBox) countdownBox.style.display = 'none';
+                console.log("VIP Access Granted for: " + userEmail);
             } else {
-                // --- NORMAL USER ---
-                isVipUser = false;
-                isUnlocked = false;
+                // --- NORMAL USER SETTINGS ---
                 if (sidebarUserStatus) sidebarUserStatus.innerText = "Free Member";
                 sidebarUserProfile.classList.remove('vip-profile-card');
                 if (vipBadgeTag) vipBadgeTag.style.display = 'none';
                 if (goldenAccessBtn) goldenAccessBtn.style.display = 'block';
+                console.log("Normal User Logged In: " + userEmail);
             }
         } else {
             if (loginBtn) loginBtn.style.display = 'flex';
             if (sidebarUserProfile) sidebarUserProfile.style.display = 'none';
             if (logoutSidebarLink) logoutSidebarLink.style.display = 'none';
             if (vipBadgeTag) vipBadgeTag.style.display = 'none';
-            sidebarUserProfile.classList.remove('vip-profile-card');
-            isVipUser = false;
-            isUnlocked = false;
+            if (sidebarUserProfile) sidebarUserProfile.classList.remove('vip-profile-card');
             if (goldenAccessBtn) goldenAccessBtn.style.display = 'block';
         }
     });
@@ -1053,10 +1050,15 @@ body{
         });
     });
 
+    // नॉर्मल यूजर के लिए 10 सेकंड का फ्री एक्सेस
+    let isFreeUnlocked = false;
     goldenAccessBtn.addEventListener('click', () => {
-        if (isVipUser) return;
+        const currentUser = auth.currentUser;
+        if (currentUser && allowedVIPEmails.includes(currentUser.email ? currentUser.email.toLowerCase().trim() : "")) {
+            return; // अगर वीआईपी है तो इसकी जरूरत ही नहीं
+        }
         
-        isUnlocked = true;
+        isFreeUnlocked = true;
         goldenAccessBtn.style.opacity = '0.7';
         goldenAccessBtn.querySelector('h3').innerText = "✨ 10 Sec Access Activated! ✨";
         countdownBox.style.display = 'block';
@@ -1071,12 +1073,10 @@ body{
 
             if (totalSeconds <= 0) {
                 clearInterval(countdownInterval);
-                if (!isVipUser) {
-                    isUnlocked = false;
-                    closeTheaterMode();
-                    stopAllVideos();
-                    expiredModalOverlay.classList.add('active');
-                }
+                isFreeUnlocked = false;
+                closeTheaterMode();
+                stopAllVideos();
+                expiredModalOverlay.classList.add('active');
                 countdownBox.style.display = 'none';
 
                 goldenAccessBtn.style.opacity = '1';
@@ -1209,9 +1209,18 @@ body{
     function handleVideoPlayAttempt(targetId, e) {
         e.stopPropagation();
         
-        // --- 100% SECURE VIP CHECK ---
-        // अगर यूजर VIP है, तो इसे बिना किसी शर्त के वीडियो देखने दें (पॉपअप कभी नहीं आएगा)
-        if (!isVipUser && !isUnlocked) {
+        const currentUser = auth.currentUser;
+        let isUserVip = false;
+        
+        if (currentUser && currentUser.email) {
+            const currentEmail = currentUser.email.toLowerCase().trim();
+            if (allowedVIPEmails.includes(currentEmail)) {
+                isUserVip = true;
+            }
+        }
+
+        // --- मुख्य जाँच: अगर यूजर वीआईपी नहीं है और 10 सेकंड का फ्री एक्सेस नहीं लिया है, तभी पॉपअप आएगा ---
+        if (!isUserVip && !isFreeUnlocked) {
             expiredModalOverlay.classList.add('active');
             return;
         }
@@ -1265,3 +1274,4 @@ body{
 
 </body>
 </html>
+
