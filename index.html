@@ -1024,7 +1024,7 @@ body{
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
 
-    // आपके दिए गए 10 आधिकारिक वीआईपी कोड्स (11 से 20)
+    // आपके आधिकारिक वीआईपी कोड्स (11 से 20)
     const validCodes = [
         "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"
     ];
@@ -1106,7 +1106,7 @@ body{
         }
     });
 
-    // 100% फिक्स किया हुआ और अपडेटेड रिडीम लॉजिक (जो अब कभी ईमेल एरर नहीं देगा)
+    // अपडेटेड और स्मार्ट रिडीम लॉजिक जो लोकल स्टोरेज और ऑथेंटिकेशन दोनों से ईमेल ढूंढ लेगा
     redeemCodeBtn.addEventListener('click', () => {
         let userEmail = "";
         const currentUser = auth.currentUser;
@@ -1114,7 +1114,7 @@ body{
         if (currentUser && currentUser.email) {
             userEmail = currentUser.email.toLowerCase().trim();
         } else {
-            // अगर auth.currentUser लोड नहीं हुआ हो, तो सीधे लोकल स्टोरेज से ईमेल निकाल लें
+            // यदि auth.currentUser तुरंत नहीं मिला, तो Firebase लोकल स्टोरेज से ईमेल निकाल लें
             for (let key in localStorage) {
                 if (key.startsWith("firebase:authUser:")) {
                     try {
@@ -1181,10 +1181,25 @@ body{
     let isFreeUnlocked = false;
     goldenAccessBtn.addEventListener('click', () => {
         const currentUser = auth.currentUser;
+        let activeEmail = "";
         if (currentUser && currentUser.email) {
-            if (checkUserVipStatus(currentUser.email.toLowerCase().trim())) {
-                return; 
+            activeEmail = currentUser.email.toLowerCase().trim();
+        } else {
+            for (let key in localStorage) {
+                if (key.startsWith("firebase:authUser:")) {
+                    try {
+                        const userData = JSON.parse(localStorage.getItem(key));
+                        if (userData && userData.email) {
+                            activeEmail = userData.email.toLowerCase().trim();
+                            break;
+                        }
+                    } catch (e) {}
+                }
             }
+        }
+
+        if (activeEmail && checkUserVipStatus(activeEmail)) {
+            return; 
         }
         
         isFreeUnlocked = true;
@@ -1340,11 +1355,24 @@ body{
         e.stopPropagation();
         
         const currentUser = auth.currentUser;
-        let isUserVip = false;
-        
+        let activeEmail = "";
         if (currentUser && currentUser.email) {
-            isUserVip = checkUserVipStatus(currentUser.email.toLowerCase().trim());
+            activeEmail = currentUser.email.toLowerCase().trim();
+        } else {
+            for (let key in localStorage) {
+                if (key.startsWith("firebase:authUser:")) {
+                    try {
+                        const userData = JSON.parse(localStorage.getItem(key));
+                        if (userData && userData.email) {
+                            activeEmail = userData.email.toLowerCase().trim();
+                            break;
+                        }
+                    } catch (e) {}
+                }
+            }
         }
+
+        let isUserVip = activeEmail ? checkUserVipStatus(activeEmail) : false;
 
         if (!isUserVip && !isFreeUnlocked) {
             expiredModalOverlay.classList.add('active');
