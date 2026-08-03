@@ -1,86 +1,119 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Animated Turtle Heart - Shifted Right</title>
+    <title>Open Noor Baby</title>
     <style>
         body {
             margin: 0;
-            background-color: black;
+            background-color: #000000;
+            overflow: hidden;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            overflow: hidden;
         }
         canvas {
-            background-color: black;
+            background-color: #000000;
+            display: block;
+        }
+        #centerBox {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            z-index: 10;
+        }
+        #loveText {
+            font-size: 32px;
+            font-weight: bold;
+            color: #ff3366;
+            text-shadow: 0 0 15px rgba(255, 51, 102, 0.8);
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        #openBtn {
+            padding: 15px 30px;
+            font-size: 20px;
+            font-weight: bold;
+            color: #ffffff;
+            background: linear-gradient(45deg, #ff3366, #ff66b2);
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(255, 51, 102, 0.6);
         }
     </style>
 </head>
 <body>
 
-<canvas id="canvas" width="700" height="700"></canvas>
+    <div id="centerBox">
+        <div id="loveText">I Love You Baby ❤️</div>
+        <button id="openBtn" onclick="startAnimation()">open noor baby</button>
+    </div>
+
+    <canvas id="heartCanvas"></canvas>
 
 <script>
-    const canvas = document.getElementById('canvas');
+    const canvas = document.getElementById('heartCanvas');
     const ctx = canvas.getContext('2d');
+    const centerBox = document.getElementById('centerBox');
 
-    // **CHANGE:** X-axis ko 350 se badha kar 400 kar diya hai taaki yeh right side shift ho jaye
-    ctx.translate(400, 400); 
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    ctx.translate(canvas.width / 2, canvas.height / 2 + 30);
     ctx.scale(1, -1);
 
     const colors = ["red", "blue", "lime", "yellow", "cyan", "magenta", "orange", "pink"];
     let i = 0;
+    let timer = null;
 
-    function animate() {
-        if (i < 120) {
-            let angle = i * (Math.PI * 2) / 120;
-            
-            // Python wale exact formulas
-            let x = 16 * Math.pow(Math.sin(angle), 3) * 15;
-            let y = (13 * Math.cos(angle) - 5 * Math.cos(2 * angle) - 2 * Math.cos(3 * angle) - Math.cos(4 * angle)) * 15;
-            
-            let c = colors[Math.floor(Math.random() * colors.length)];
-            
-            // Line from starting point (0, 40) to (x, y)
-            ctx.beginPath();
-            ctx.moveTo(0, 40);
-            ctx.lineTo(x, y);
-            ctx.strokeStyle = c;
-            ctx.lineWidth = 1.5;
-            ctx.stroke();
+    function startAnimation() {
+        centerBox.style.display = 'none';
+        
+        // Interval use kiya hai taaki mobile browser par animation 100% run ho
+        timer = setInterval(() => {
+            if (i < 120) {
+                let angle = i * (Math.PI * 2) / 120;
+                let scale = 11;
+                
+                let x = 16 * Math.pow(Math.sin(angle), 3) * scale;
+                let y = (13 * Math.cos(angle) - 5 * Math.cos(2 * angle) - 2 * Math.cos(3 * angle) - Math.cos(4 * angle)) * scale;
+                
+                let c = colors[Math.floor(Math.random() * colors.length)];
+                
+                ctx.beginPath();
+                ctx.moveTo(0, 40);
+                ctx.lineTo(x, y);
+                ctx.strokeStyle = c;
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
 
-            // End point par star pattern draw karna
-            drawStar(x, y, c);
+                // Star draw
+                ctx.save();
+                ctx.translate(x, y);
+                ctx.strokeStyle = c;
+                ctx.lineWidth = 1;
+                for (let j = 0; j < 8; j++) {
+                    ctx.beginPath();
+                    ctx.moveTo(0, 0);
+                    ctx.lineTo(5, 0);
+                    ctx.stroke();
+                    ctx.translate(5, 0);
+                    ctx.rotate(45 * Math.PI / 180);
+                    ctx.translate(-5, 0);
+                }
+                ctx.restore();
 
-            i++;
-            setTimeout(() => {
-                requestAnimationFrame(animate);
-            }, 25); 
-        }
+                i++;
+            } else {
+                clearInterval(timer);
+            }
+        }, 35);
     }
-
-    function drawStar(startX, startY, color) {
-        ctx.save();
-        ctx.translate(startX, startY);
-        ctx.strokeStyle = color;
-        ctx.lineWidth = 1;
-
-        for (let j = 0; j < 8; j++) {
-            ctx.beginPath();
-            ctx.moveTo(0, 0);
-            ctx.lineTo(6, 0);
-            ctx.stroke();
-            ctx.translate(6, 0);
-            ctx.rotate(45 * Math.PI / 180);
-            ctx.translate(-6, 0);
-        }
-        ctx.restore();
-    }
-
-    animate();
 </script>
 
 </body>
