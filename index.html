@@ -5,9 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Playtime</title>
 
-<!-- Firebase App SDKs (Compat Version) -->
+<!-- Firebase App & Database SDKs (Compat Version) -->
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
 <style>
 /* --- Light Mode Colors (Default) --- */
@@ -59,113 +60,7 @@ body{
     transition: background 0.3s ease, color 0.3s ease;
 }
 
-/* --- Golden Access Button & Redeem Box --- */
-.golden-access-banner {
-    width: 100%;
-    max-width: 320px;
-    margin: 0 auto 15px auto;
-    background: linear-gradient(135deg, #bf953f, #fc6, #b38728, #fbf5b7, #aa771c);
-    background-size: 300% 300%;
-    animation: goldShine 5s ease infinite;
-    border-radius: 12px;
-    padding: 2px;
-    box-shadow: 0 3px 10px rgba(191, 149, 63, 0.3);
-    cursor: pointer;
-    text-align: center;
-}
-
-@keyframes goldShine {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
-
-.golden-btn-inner {
-    background: var(--card-bg);
-    border-radius: 10px;
-    padding: 10px 14px;
-    transition: background 0.3s ease;
-}
-
-.golden-btn-inner h3 {
-    font-size: 13px;
-    color: #b38728;
-    margin-bottom: 2px;
-    font-weight: 700;
-}
-
-.golden-btn-inner p {
-    font-size: 11px;
-    color: var(--text-color);
-    opacity: 0.8;
-}
-
-[data-theme="dark"] .golden-btn-inner h3 {
-    color: #fbf5b7;
-}
-
-/* VIP Code Redeem Section Container */
-.vip-redeem-container {
-    width: 100%;
-    max-width: 320px;
-    margin: 0 auto 20px auto;
-    background: var(--card-bg);
-    border: 1.5px solid #bf953f;
-    border-radius: 12px;
-    padding: 12px;
-    box-shadow: 0 4px 12px rgba(191, 149, 63, 0.2);
-    text-align: center;
-}
-
-.vip-redeem-container h4 {
-    font-size: 13px;
-    color: #b38728;
-    margin-bottom: 8px;
-    font-weight: 700;
-}
-
-.vip-input-row {
-    display: flex;
-    gap: 8px;
-}
-
-.vip-code-input {
-    flex: 1;
-    height: 38px;
-    background: var(--bg-color);
-    border: 1px solid var(--card-border);
-    border-radius: 8px;
-    padding: 0 10px;
-    color: var(--text-color);
-    font-size: 12px;
-    outline: none;
-}
-
-.vip-redeem-btn {
-    height: 38px;
-    background: linear-gradient(135deg, #bf953f, #b38728);
-    border: none;
-    border-radius: 8px;
-    color: #ffffff;
-    font-size: 12px;
-    font-weight: 600;
-    padding: 0 12px;
-    cursor: pointer;
-}
-
-.countdown-timer-box {
-    text-align: center;
-    font-size: 13px;
-    font-weight: 700;
-    color: #d97706;
-    margin-bottom: 20px;
-    display: none;
-}
-
-[data-theme="dark"] .countdown-timer-box {
-    color: #fbbf24;
-}
-
+/* VIP Badge Tag in Header */
 .vip-badge-tag {
     background: linear-gradient(135deg, #f59e0b, #d97706);
     color: white;
@@ -178,7 +73,7 @@ body{
     letter-spacing: 0.5px;
 }
 
-/* --- Expired Modal --- */
+/* --- Premium Required Modal --- */
 .expired-modal-overlay {
     position: fixed;
     top: 0;
@@ -441,6 +336,29 @@ body{
     border-color: var(--primary-color);
 }
 
+@keyframes goldShine {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Premium Button Styling */
+.premium-upgrade-btn {
+    background: linear-gradient(135deg, #bf953f, #fc6, #b38728);
+    color: #fff;
+    border: none;
+    justify-content: center;
+    font-size: 16px;
+    box-shadow: 0 4px 15px rgba(191, 149, 63, 0.4);
+    animation: goldShine 5s ease infinite;
+    background-size: 300% 300%;
+}
+.premium-upgrade-btn:hover {
+    background: linear-gradient(135deg, #b38728, #bf953f);
+    color: #fff;
+    border: none;
+}
+
 .icon{
     width:40px;
     height:40px;
@@ -497,6 +415,84 @@ body{
 .page-title-box h2 {
     font-size: 18px;
     color: var(--text-color);
+}
+
+/* Premium Plans Cards */
+.plan-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    transition: transform 0.3s ease;
+}
+
+.plan-card.popular {
+    border: 2px solid #bf953f;
+    background: linear-gradient(135deg, rgba(191,149,63,0.05), rgba(252,204,102,0.05));
+    position: relative;
+}
+
+.popular-badge {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #bf953f;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.plan-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-color);
+    margin-bottom: 10px;
+}
+
+.plan-price {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--primary-color);
+    margin-bottom: 15px;
+}
+.plan-card.popular .plan-price {
+    color: #b38728;
+}
+
+.plan-features {
+    list-style: none;
+    margin-bottom: 20px;
+    font-size: 14px;
+    color: var(--text-color);
+    opacity: 0.8;
+}
+
+.plan-features li {
+    margin-bottom: 8px;
+}
+
+.buy-btn {
+    width: 100%;
+    padding: 12px;
+    background: var(--btn-bg);
+    border: 1px solid var(--primary-color);
+    color: var(--primary-color);
+    font-weight: bold;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.plan-card.popular .buy-btn {
+    background: linear-gradient(135deg, #bf953f, #b38728);
+    color: white;
+    border: none;
 }
 
 .video-card {
@@ -815,25 +811,10 @@ body{
 <div id="homeView" class="view-section active">
     <div class="main">
         
-        <div class="golden-access-banner" id="goldenAccessBtn">
-            <div class="golden-btn-inner">
-                <h3>✨ Get 10 Sec Free Access ✨</h3>
-                <p>Click to unlock video playback</p>
-            </div>
-        </div>
-
-        <!-- VIP Code Redeem Box -->
-        <div class="vip-redeem-container" id="vipRedeemBox" style="display: none;">
-            <h4>👑 Enter VIP Code (1 Month Pass)</h4>
-            <div class="vip-input-row">
-                <input type="text" id="vipCodeInput" class="vip-code-input" placeholder="Enter code here...">
-                <button id="redeemCodeBtn" class="vip-redeem-btn">Redeem</button>
-            </div>
-        </div>
-
-        <div class="countdown-timer-box" id="countdownBox">
-            ⏱️ Free Access Remaining: <span id="timerDisplay">00:10</span>
-        </div>
+        <!-- Premium Button Header -->
+        <button class="option-btn premium-upgrade-btn" id="navPremiumBtn">
+            👑 Get Premium Membership
+        </button>
 
         <div class="gif-container">
             <img src="https://lh3.googleusercontent.com/d/1c82JhjhupPfLzEAD_VcI1XKgQH4R1u6O" alt="GIF">
@@ -868,6 +849,52 @@ body{
             <img src="https://lh3.googleusercontent.com/d/13HR-Dy-bCb_SEltunMb0lUc5DoX7O4fL" class="footer-tiny-icon" alt="1">
             <img src="https://lh3.googleusercontent.com/d/1bh5HiNa_q0GIFTQQotJo7VoZ1JvZ1qXd" class="footer-tiny-icon" alt="2">
             <img src="https://lh3.googleusercontent.com/d/1YcFfnuOYVM6ishN_i5CSXqSAd2AqeJbf" class="footer-tiny-icon" alt="3">
+        </div>
+
+    </div>
+</div>
+
+<!-- PREMIUM PLANS VIEW -->
+<div id="premiumView" class="view-section">
+    <div class="main">
+        <button class="back-btn" id="premiumBackBtn">Back to Home</button>
+
+        <div class="page-title-box" style="justify-content: center; border-color: #bf953f;">
+            <h2>👑 Choose Your Premium Plan</h2>
+        </div>
+
+        <div class="plan-card">
+            <div class="plan-title">Basic Plan</div>
+            <div class="plan-price">₹99 <span style="font-size: 14px; opacity: 0.7;">/ month</span></div>
+            <ul class="plan-features">
+                <li>✅ Access to all basic videos</li>
+                <li>✅ 720p Video Quality</li>
+                <li>❌ No Ads</li>
+            </ul>
+            <button class="buy-btn" onclick="processPayment('Basic Plan')">Buy Now</button>
+        </div>
+
+        <div class="plan-card popular">
+            <div class="popular-badge">Most Popular</div>
+            <div class="plan-title">VIP Premium</div>
+            <div class="plan-price">₹249 <span style="font-size: 14px; opacity: 0.7;">/ 3 months</span></div>
+            <ul class="plan-features">
+                <li>👑 Full Access to Premium Content</li>
+                <li>👑 1080p HD Video Quality</li>
+                <li>👑 Ad-Free Experience</li>
+            </ul>
+            <button class="buy-btn" onclick="processPayment('VIP Premium')">Upgrade to VIP</button>
+        </div>
+
+        <div class="plan-card">
+            <div class="plan-title">Lifetime Pass</div>
+            <div class="plan-price">₹999 <span style="font-size: 14px; opacity: 0.7;">/ lifetime</span></div>
+            <ul class="plan-features">
+                <li>✨ One time payment</li>
+                <li>✨ Unlimited Access forever</li>
+                <li>✨ Early Access to new videos</li>
+            </ul>
+            <button class="buy-btn" onclick="processPayment('Lifetime Pass')">Get Lifetime Access</button>
         </div>
 
     </div>
@@ -943,7 +970,7 @@ body{
     </div>
 </div>
 
-<!-- EXPIRED MODAL -->
+<!-- PREMIUM REQUIRED MODAL -->
 <div class="expired-modal-overlay" id="expiredModalOverlay">
     <div class="expired-modal-box">
         <div class="expired-icon-circle">
@@ -951,11 +978,11 @@ body{
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
             </svg>
         </div>
-        <h2>Premium Expired</h2>
-        <p>Your 1-month VIP access has ended or requires a new code. Please redeem a fresh code to continue.</p>
+        <h2>Premium Access Denied</h2>
+        <p>Aapke paas active VIP Membership nahi hai. Yeh videos dekhne ke liye premium plan lein.</p>
         <div class="expired-btns-row">
-            <button class="expired-btn-later" id="expiredLaterBtn">Maybe Later</button>
-            <button class="expired-btn-renew" id="expiredRenewBtn">👑 Enter Code</button>
+            <button class="expired-btn-later" id="expiredLaterBtn">Cancel</button>
+            <button class="expired-btn-renew" id="expiredRenewBtn">👑 Get Premium</button>
         </div>
     </div>
 </div>
@@ -990,9 +1017,9 @@ body{
             <img src="https://lh3.googleusercontent.com/d/1nW4xgA8V9kmLIrPI1N_A6xMhJsO6pdHp" class="sidebar-icon" alt="Home">
             Home
         </a>
-        <a href="#" class="sidebar-link">
+        <a class="sidebar-link" id="sidebarPremiumLink">
             <img src="https://lh3.googleusercontent.com/d/1Q-DIL-1NyOhhBnZl2foeFA7kB9EVebxD" class="sidebar-icon" alt="Prem">
-            Premium Video
+            Premium Membership
         </a>
         <a class="sidebar-link" id="themeToggleBtn">
             <img src="https://lh3.googleusercontent.com/d/1YBgjM8tmNOhDYiBNRkbwl7ojEivZijQF" class="sidebar-icon" id="themeIcon" alt="Theme">
@@ -1014,6 +1041,7 @@ body{
     const firebaseConfig = {
       apiKey: "AIzaSyDI7yuJx1COt5OeHx8L9TWwdLRXSj1MqZo",
       authDomain: "playtime-f5bd9.firebaseapp.com",
+      databaseURL: "https://playtime-f5bd9-default-rtdb.firebaseio.com", // Ensure your Realtime Database URL is here
       projectId: "playtime-f5bd9",
       storageBucket: "playtime-f5bd9.firebasestorage.app",
       messagingSenderId: "339670579331",
@@ -1023,19 +1051,8 @@ body{
 
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
+    const db = firebase.database();
 
-    const validCodes = [
-        "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"
-    ];
-
-    let countdownInterval = null;
-
-    const goldenAccessBtn = document.getElementById('goldenAccessBtn');
-    const vipRedeemBox = document.getElementById('vipRedeemBox');
-    const vipCodeInput = document.getElementById('vipCodeInput');
-    const redeemCodeBtn = document.getElementById('redeemCodeBtn');
-    const countdownBox = document.getElementById('countdownBox');
-    const timerDisplay = document.getElementById('timerDisplay');
     const expiredModalOverlay = document.getElementById('expiredModalOverlay');
     const expiredLaterBtn = document.getElementById('expiredLaterBtn');
     const expiredRenewBtn = document.getElementById('expiredRenewBtn');
@@ -1048,21 +1065,32 @@ body{
     const sidebarUserStatus = document.getElementById('sidebarUserStatus');
     const logoutSidebarLink = document.getElementById('logoutSidebarLink');
 
-    let usedCodesMap = JSON.parse(localStorage.getItem('playtime_used_codes') || "{}");
-    let userVipData = JSON.parse(localStorage.getItem('playtime_vip_users') || "{}");
+    // Global variable to track current user's VIP status from Firebase
+    let isUserVip = false;
 
-    function checkUserVipStatus(userEmail) {
-        if (!userVipData[userEmail]) return false;
-        let expiryTime = userVipData[userEmail];
-        let currentTime = new Date().getTime();
-        
-        if (currentTime < expiryTime) {
-            return true;
-        } else {
-            delete userVipData[userEmail];
-            localStorage.setItem('playtime_vip_users', JSON.stringify(userVipData));
-            return false;
+    // Function to check Firebase Database for VIP access
+    function checkFirebaseVipStatus(user, callback) {
+        if (!user || !user.email) {
+            callback(false);
+            return;
         }
+
+        // Clean email to use as firebase key (replace dots with commas because firebase keys cannot contain '.')
+        let safeEmailKey = user.email.toLowerCase().trim().replace(/\./g, '_');
+
+        db.ref('vip_users/' + safeEmailKey).once('value')
+            .then((snapshot) => {
+                const data = snapshot.val();
+                if (data && data.isVip === true) {
+                    callback(true);
+                } else {
+                    callback(false);
+                }
+            })
+            .catch((error) => {
+                console.error("Database check error:", error);
+                callback(false);
+            });
     }
 
     auth.onAuthStateChanged((user) => {
@@ -1077,86 +1105,31 @@ body{
             if (sidebarUserName) sidebarUserName.innerText = userName;
             if (logoutSidebarLink) logoutSidebarLink.style.display = 'flex';
 
-            let isUserVip = checkUserVipStatus(userEmail);
+            // Check VIP Status from Firebase Database
+            checkFirebaseVipStatus(user, (vipStatus) => {
+                isUserVip = vipStatus;
 
-            if (isUserVip) {
-                if (sidebarUserStatus) sidebarUserStatus.innerText = "👑 Exclusive VIP Member";
-                if (vipBadgeTag) vipBadgeTag.style.display = 'inline-block';
-                sidebarUserProfile.classList.add('vip-profile-card');
+                if (isUserVip) {
+                    if (sidebarUserStatus) sidebarUserStatus.innerText = "👑 Exclusive VIP Member";
+                    if (vipBadgeTag) vipBadgeTag.style.display = 'inline-block';
+                    sidebarUserProfile.classList.add('vip-profile-card');
+                    document.getElementById('navPremiumBtn').style.display = 'none';
+                } else {
+                    if (sidebarUserStatus) sidebarUserStatus.innerText = "Free Member";
+                    sidebarUserProfile.classList.remove('vip-profile-card');
+                    if (vipBadgeTag) vipBadgeTag.style.display = 'none';
+                }
+            });
 
-                if (goldenAccessBtn) goldenAccessBtn.style.display = 'none';
-                if (vipRedeemBox) vipRedeemBox.style.display = 'none';
-                if (countdownBox) countdownBox.style.display = 'none';
-            } else {
-                if (sidebarUserStatus) sidebarUserStatus.innerText = "Free Member";
-                sidebarUserProfile.classList.remove('vip-profile-card');
-                if (vipBadgeTag) vipBadgeTag.style.display = 'none';
-                if (goldenAccessBtn) goldenAccessBtn.style.display = 'block';
-                if (vipRedeemBox) vipRedeemBox.style.display = 'block';
-            }
         } else {
+            isUserVip = false;
             if (loginBtn) loginBtn.style.display = 'flex';
             if (sidebarUserProfile) sidebarUserProfile.style.display = 'none';
             if (logoutSidebarLink) logoutSidebarLink.style.display = 'none';
             if (vipBadgeTag) vipBadgeTag.style.display = 'none';
             if (sidebarUserProfile) sidebarUserProfile.classList.remove('vip-profile-card');
-            if (goldenAccessBtn) goldenAccessBtn.style.display = 'block';
-            if (vipRedeemBox) vipRedeemBox.style.display = 'none';
+            if (navPremiumBtn) navPremiumBtn.style.display = 'flex';
         }
-    });
-
-    redeemCodeBtn.addEventListener('click', () => {
-        let userEmail = "";
-        const currentUser = auth.currentUser;
-        
-        if (currentUser && currentUser.email) {
-            userEmail = currentUser.email.toLowerCase().trim();
-        } else {
-            for (let key in localStorage) {
-                if (key.startsWith("firebase:authUser:")) {
-                    try {
-                        const userData = JSON.parse(localStorage.getItem(key));
-                        if (userData && userData.email) {
-                            userEmail = userData.email.toLowerCase().trim();
-                            break;
-                        }
-                    } catch (e) {}
-                }
-            }
-        }
-
-        if (!userEmail) {
-            alert("⚠️ कृपया सुनिश्चित करें कि आप Google से ठीक से लॉग इन हैं।");
-            return;
-        }
-
-        const enteredCode = vipCodeInput.value.trim();
-
-        if (!enteredCode) {
-            alert("⚠️ कृपया वीआईपी कोड दर्ज करें!");
-            return;
-        }
-
-        if (!validCodes.includes(enteredCode)) {
-            alert("❌ गलत कोड! (Invalid VIP Code). कृपया सही कोड डालें।");
-            return;
-        }
-
-        if (usedCodesMap[enteredCode]) {
-            alert("❌ यह कोड पहले ही इस्तेमाल किया जा चुका है!");
-            return;
-        }
-
-        let expiryTimestamp = new Date().getTime() + (30 * 24 * 60 * 60 * 1000);
-        
-        usedCodesMap[enteredCode] = userEmail;
-        userVipData[userEmail] = expiryTimestamp;
-
-        localStorage.setItem('playtime_used_codes', JSON.stringify(usedCodesMap));
-        localStorage.setItem('playtime_vip_users', JSON.stringify(userVipData));
-
-        alert("🎉 बधाई हो! वीआईपी एक्सेस 1 महीने के लिए सफलतापूर्व एक्टिव हो गया है!");
-        location.reload();
     });
 
     loginBtn.addEventListener('click', () => {
@@ -1175,65 +1148,13 @@ body{
         });
     });
 
-    let isFreeUnlocked = false;
-    goldenAccessBtn.addEventListener('click', () => {
-        const currentUser = auth.currentUser;
-        let activeEmail = "";
-        if (currentUser && currentUser.email) {
-            activeEmail = currentUser.email.toLowerCase().trim();
-        } else {
-            for (let key in localStorage) {
-                if (key.startsWith("firebase:authUser:")) {
-                    try {
-                        const userData = JSON.parse(localStorage.getItem(key));
-                        if (userData && userData.email) {
-                            activeEmail = userData.email.toLowerCase().trim();
-                            break;
-                        }
-                    } catch (e) {}
-                }
-            }
-        }
-
-        if (activeEmail && checkUserVipStatus(activeEmail)) {
-            return; 
-        }
-        
-        isFreeUnlocked = true;
-        goldenAccessBtn.style.opacity = '0.7';
-        goldenAccessBtn.querySelector('h3').innerText = "✨ 10 Sec Access Activated! ✨";
-        countdownBox.style.display = 'block';
-
-        let totalSeconds = 10;
-
-        countdownInterval = setInterval(() => {
-            let minutes = Math.floor(totalSeconds / 60);
-            let seconds = totalSeconds % 60;
-
-            timerDisplay.innerText = `0${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-
-            if (totalSeconds <= 0) {
-                clearInterval(countdownInterval);
-                isFreeUnlocked = false;
-                closeTheaterMode();
-                stopAllVideos();
-                expiredModalOverlay.classList.add('active');
-                countdownBox.style.display = 'none';
-
-                goldenAccessBtn.style.opacity = '1';
-                goldenAccessBtn.querySelector('h3').innerText = "✨ Get 10 Sec Free Access ✨";
-            }
-            totalSeconds--;
-        }, 1000);
-    });
-
     expiredLaterBtn.addEventListener('click', () => {
         expiredModalOverlay.classList.remove('active');
     });
 
     expiredRenewBtn.addEventListener('click', () => {
         expiredModalOverlay.classList.remove('active');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        showView(premiumView);
     });
 
     const menuBtn = document.getElementById('menuBtn');
@@ -1243,21 +1164,23 @@ body{
 
     const homeView = document.getElementById('homeView');
     const instaView = document.getElementById('instaView');
-    const instaBtn = document.getElementById('instaBtn');
-    const backBtn = document.getElementById('backBtn');
-    
+    const premiumView = document.getElementById('premiumView');
     const girlsView = document.getElementById('girlsView');
+
+    const instaBtn = document.getElementById('instaBtn');
     const girlsBtn = document.getElementById('girlsBtn');
+    const navPremiumBtn = document.getElementById('navPremiumBtn');
+    const sidebarPremiumLink = document.getElementById('sidebarPremiumLink');
+
+    const backBtn = document.getElementById('backBtn');
     const girlsBackBtn = document.getElementById('girlsBackBtn');
-    const girlsNextPageBtn = document.getElementById('girlsNextPageBtn');
-
+    const premiumBackBtn = document.getElementById('premiumBackBtn');
     const menuHomeLink = document.getElementById('menuHomeLink');
-    const nextPageBtn = document.getElementById('nextPageBtn');
 
+    // Theme Toggle
     const themeToggleBtn = document.getElementById('themeToggleBtn');
     const themeText = document.getElementById('themeText');
     const htmlElement = document.documentElement;
-
     const savedTheme = localStorage.getItem('theme') || 'light';
     if (savedTheme === 'dark') {
         htmlElement.setAttribute('data-theme', 'dark');
@@ -1317,61 +1240,39 @@ body{
         overlay.classList.remove('active');
     });
 
-    instaBtn.addEventListener('click', () => {
-        homeView.classList.remove('active');
-        instaView.classList.add('active');
-        window.scrollTo(0, 0);
-    });
-
-    backBtn.addEventListener('click', () => {
+    // Navigation Logic
+    function showView(viewToShow) {
         closeTheaterMode();
+        stopAllVideos();
+        homeView.classList.remove('active');
         instaView.classList.remove('active');
-        homeView.classList.add('active');
-        window.scrollTo(0, 0);
-        stopAllVideos(); 
-    });
-
-    girlsBtn.addEventListener('click', () => {
-        homeView.classList.remove('active');
-        girlsView.classList.add('active');
-        window.scrollTo(0, 0);
-    });
-
-    girlsBackBtn.addEventListener('click', () => {
-        closeTheaterMode();
         girlsView.classList.remove('active');
-        homeView.classList.add('active');
+        premiumView.classList.remove('active');
+        viewToShow.classList.add('active');
         window.scrollTo(0, 0);
-        stopAllVideos(); 
-    });
+        sidebar.classList.remove('active');
+        overlay.classList.remove('active');
+    }
 
-    nextPageBtn.addEventListener('click', () => alert("Next page feature coming soon!"));
-    girlsNextPageBtn.addEventListener('click', () => alert("Next page function coming soon!"));
+    instaBtn.addEventListener('click', () => showView(instaView));
+    girlsBtn.addEventListener('click', () => showView(girlsView));
+    navPremiumBtn.addEventListener('click', () => showView(premiumView));
+    sidebarPremiumLink.addEventListener('click', () => showView(premiumView));
+
+    backBtn.addEventListener('click', () => showView(homeView));
+    girlsBackBtn.addEventListener('click', () => showView(homeView));
+    premiumBackBtn.addEventListener('click', () => showView(homeView));
+    menuHomeLink.addEventListener('click', () => showView(homeView));
+
+    function processPayment(planName) {
+        alert("Redirecting to payment gateway for " + planName + "...\n(Note: Integrate Razorpay/Stripe here in the future)");
+    }
 
     function handleVideoPlayAttempt(targetId, e) {
         e.stopPropagation();
-        
-        const currentUser = auth.currentUser;
-        let activeEmail = "";
-        if (currentUser && currentUser.email) {
-            activeEmail = currentUser.email.toLowerCase().trim();
-        } else {
-            for (let key in localStorage) {
-                if (key.startsWith("firebase:authUser:")) {
-                    try {
-                        const userData = JSON.parse(localStorage.getItem(key));
-                        if (userData && userData.email) {
-                            activeEmail = userData.email.toLowerCase().trim();
-                            break;
-                        }
-                    } catch (e) {}
-                }
-            }
-        }
 
-        let isUserVip = activeEmail ? checkUserVipStatus(activeEmail) : false;
-
-        if (!isUserVip && !isFreeUnlocked) {
+        // Agar user VIP nahi hai, toh direct premium popup aa jayega
+        if (!isUserVip) {
             expiredModalOverlay.classList.add('active');
             return;
         }
@@ -1392,7 +1293,7 @@ body{
     });
 
     customFsBtns.forEach(btn => {
-        btn.addEventListener('click', (e) => handleVideoPlayAttempt(btn.getAttribute('data-video'), e));
+        btn.addEventListener('click', (e) => handleVideoProfilePlayAttempt = handleVideoPlayAttempt(btn.getAttribute('data-video'), e));
     });
 
     function closeTheaterMode() {
@@ -1411,16 +1312,6 @@ body{
         if (e.target === theaterOverlay) closeTheaterMode();
     });
 
-    menuHomeLink.addEventListener('click', () => {
-        closeTheaterMode();
-        instaView.classList.remove('active');
-        girlsView.classList.remove('active');
-        homeView.classList.add('active');
-        sidebar.classList.remove('active');
-        overlay.classList.remove('active');
-        window.scrollTo(0, 0);
-        stopAllVideos(); 
-    });
 </script>
 
 </body>
