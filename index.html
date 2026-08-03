@@ -73,6 +73,84 @@ body{
     letter-spacing: 0.5px;
 }
 
+/* --- Custom Toast Notification Popup (Replaces Browser alert) --- */
+.custom-toast-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 99999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.custom-toast-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.custom-toast-box {
+    width: 85%;
+    max-width: 320px;
+    background: #181b22;
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    border-radius: 24px;
+    padding: 26px 20px;
+    text-align: center;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.6);
+    transform: scale(0.85);
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.custom-toast-overlay.active .custom-toast-box {
+    transform: scale(1);
+}
+
+.custom-toast-icon {
+    font-size: 40px;
+    margin-bottom: 12px;
+    animation: bounceIcon 1s infinite alternate;
+}
+
+@keyframes bounceIcon {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-6px); }
+}
+
+.custom-toast-box h3 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 8px;
+}
+
+.custom-toast-box p {
+    font-size: 13px;
+    line-height: 1.5;
+    color: #94a3b8;
+    margin-bottom: 20px;
+}
+
+.custom-toast-btn {
+    width: 100%;
+    height: 44px;
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    border: none;
+    border-radius: 12px;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+}
+
 /* --- Premium Required Modal --- */
 .expired-modal-overlay {
     position: fixed;
@@ -293,13 +371,13 @@ body{
 #homeView .main {
     display: flex;
     flex-direction: column;
-    min-height: calc(100vh - 64px); 
+    min-height: auto; 
 }
 
 .gif-container{
     width:100%;
     height:80px;
-    margin-bottom: 25px;
+    margin-bottom: 15px;
     border-radius:16px;
     overflow:hidden;
     border: 1px solid var(--card-border);
@@ -311,6 +389,13 @@ body{
     height:100%;
     object-fit: cover;
     object-position: center 20%;
+}
+
+/* Row for side-by-side buttons */
+.top-buttons-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
 }
 
 .option-btn{
@@ -342,21 +427,144 @@ body{
     100% { background-position: 0% 50%; }
 }
 
-/* Premium Button Styling */
-.premium-upgrade-btn {
+/* Premium Button Styling (Compact & Side-by-side) */
+.top-buttons-row .premium-upgrade-btn {
+    flex: 1;
     background: linear-gradient(135deg, #bf953f, #fc6, #b38728);
     color: #fff;
     border: none;
     justify-content: center;
-    font-size: 16px;
-    box-shadow: 0 4px 15px rgba(191, 149, 63, 0.4);
+    font-size: 13px;
+    box-shadow: 0 3px 10px rgba(191, 149, 63, 0.3);
     animation: goldShine 5s ease infinite;
     background-size: 300% 300%;
+    height: 48px;
+    padding: 0 8px;
+    margin-bottom: 0;
+    text-align: center;
+    white-space: nowrap;
 }
-.premium-upgrade-btn:hover {
+.top-buttons-row .premium-upgrade-btn:hover {
     background: linear-gradient(135deg, #b38728, #bf953f);
     color: #fff;
     border: none;
+}
+
+/* Free Trial Button Styling (Compact & Side-by-side) */
+.top-buttons-row .free-trial-btn {
+    flex: 1;
+    background: linear-gradient(135deg, #2563eb, #3b82f6);
+    color: #fff;
+    border: none;
+    justify-content: center;
+    font-size: 12px;
+    box-shadow: 0 3px 10px rgba(37, 99, 235, 0.3);
+    height: 48px;
+    padding: 0 8px;
+    margin-bottom: 0;
+    text-align: center;
+    white-space: nowrap;
+}
+.top-buttons-row .free-trial-btn:hover {
+    background: linear-gradient(135deg, #1d4ed8, #2563eb);
+    color: #fff;
+}
+
+.top-buttons-row .free-trial-btn:disabled {
+    background: #94a3b8;
+    cursor: not-allowed;
+    box-shadow: none;
+    opacity: 0.7;
+}
+
+/* --- Grid System for Lower Option Buttons --- */
+.grid-buttons-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 25px;
+    margin-top: 15px; 
+}
+
+.button-row {
+    display: flex;
+    gap: 12px;
+}
+
+.grid-box-btn {
+    flex: 1;
+    height: 75px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    color: var(--text-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+    text-align: center;
+    position: relative;
+}
+
+.grid-box-btn:hover {
+    background: var(--btn-bg);
+    border-color: var(--primary-color);
+}
+
+/* Lock overlay badge */
+.lock-badge {
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #ef4444;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+/* Specific styling for the 4 blue box action buttons */
+.blue-box-btn {
+    flex: 1;
+    height: 38px;
+    background: #2563eb;
+    border: 1px solid #1d4ed8;
+    border-radius: 10px;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+    text-align: center;
+    padding: 0 4px;
+    white-space: nowrap;
+    box-shadow: 0 2px 5px rgba(37, 99, 235, 0.2);
+}
+
+.blue-box-btn:hover {
+    background: #1d4ed8;
+    border-color: #1e40af;
+}
+
+.grid-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    object-fit: cover;
 }
 
 .icon{
@@ -371,9 +579,9 @@ body{
     justify-content: center;
     align-items: center;
     gap: 20px;
-    margin-top: auto; 
-    padding-top: 30px;
-    padding-bottom: 10px;
+    margin-top: 10px; 
+    padding-top: 10px;
+    padding-bottom: 20px;
 }
 
 .footer-tiny-icon {
@@ -811,39 +1019,71 @@ body{
 <div id="homeView" class="view-section active">
     <div class="main">
         
-        <!-- Premium Button Header -->
-        <button class="option-btn premium-upgrade-btn" id="navPremiumBtn">
-            👑 Get Premium Membership
-        </button>
-
+        <!-- GIF Photo Uppar -->
         <div class="gif-container">
             <img src="https://lh3.googleusercontent.com/d/1c82JhjhupPfLzEAD_VcI1XKgQH4R1u6O" alt="GIF">
         </div>
 
-        <button class="option-btn" id="instaBtn">
-            <img src="https://lh3.googleusercontent.com/d/12ZV2Epf3zEF-7a8G_XBSu4gE8w1BUPzH" class="icon" alt="Insta">
-            Instagram viral video
-        </button>
+        <!-- Dono Buttons Side by Side (GIF ke Neeche) -->
+        <div class="top-buttons-row">
+            <!-- Free 5-Sec Trial Button (Testing Mode Active) -->
+            <button class="option-btn free-trial-btn" id="freeTrialBtn">
+                <span>🎁 Free 5-Sec VIP</span>
+            </button>
 
-        <button class="option-btn">
-            <img src="https://lh3.googleusercontent.com/d/1m2m9B0GXc-5t8sB2Se0LLV0BBqN913ks" class="icon" alt="Jap">
-            Japanese adult videos
-        </button>
+            <!-- Premium Button -->
+            <button class="option-btn premium-upgrade-btn" id="navPremiumBtn">
+                👑 Premium Member
+            </button>
+        </div>
 
-        <button class="option-btn">
-            <img src="https://lh3.googleusercontent.com/d/1R6qmY9bL6qw3oKeuC5n1IyMGZ27BEKGf" class="icon" alt="US">
-            American adult videos
-        </button>
+        <!-- All 4 Action Buttons Placed Side-by-Side in a Single Row -->
+        <div class="button-row" style="margin-bottom: 20px;">
+            <button class="blue-box-btn" onclick="filterCategory('forYou')">✨ For You</button>
+            <button class="blue-box-btn" onclick="filterCategory('trending')">🔥 Trending</button>
+            <button class="blue-box-btn" onclick="filterCategory('viral')">⚡ Viral</button>
+            <button class="blue-box-btn" onclick="filterCategory('recent')">🕒 Recent</button>
+        </div>
 
-        <button class="option-btn">
-            <img src="https://lh3.googleusercontent.com/d/1EOTFIc7AAesuSY_w7zIrQpQ_a5L7kZ_J" class="icon" alt="Desi">
-            Desi adult videos
-        </button>
+        <!-- Lower Option Buttons in 2x2 Grid Layout with Lock Badge -->
+        <div class="grid-buttons-container">
+            <!-- Row 1 -->
+            <div class="button-row">
+                <button class="grid-box-btn" id="instaBtn">
+                    <span class="lock-badge">🔒 Locked</span>
+                    <img src="https://lh3.googleusercontent.com/d/12ZV2Epf3zEF-7a8G_XBSu4gE8w1BUPzH" class="grid-icon" alt="Insta">
+                    Instagram viral video
+                </button>
+                <button class="grid-box-btn" id="japBtn">
+                    <span class="lock-badge">🔒 Locked</span>
+                    <img src="https://lh3.googleusercontent.com/d/1m2m9B0GXc-5t8sB2Se0LLV0BBqN913ks" class="grid-icon" alt="Jap">
+                    Japanese adult videos
+                </button>
+            </div>
 
-        <button class="option-btn" id="girlsBtn">
-            <img src="https://lh3.googleusercontent.com/d/1Mj3Pjhz51_CMW8zt_yisILSBivRssX-B" class="icon" alt="Girls">
-            Girl nudes video
-        </button>
+            <!-- Row 2 -->
+            <div class="button-row">
+                <button class="grid-box-btn" id="usBtn">
+                    <span class="lock-badge">🔒 Locked</span>
+                    <img src="https://lh3.googleusercontent.com/d/1R6qmY9bL6qw3oKeuC5n1IyMGZ27BEKGf" class="grid-icon" alt="US">
+                    American adult videos
+                </button>
+                <button class="grid-box-btn" id="desiBtn">
+                    <span class="lock-badge">🔒 Locked</span>
+                    <img src="https://lh3.googleusercontent.com/d/1EOTFIc7AAesuSY_w7zIrQpQ_a5L7kZ_J" class="grid-icon" alt="Desi">
+                    Desi adult videos
+                </button>
+            </div>
+
+            <!-- Row 3 -->
+            <div class="button-row">
+                <button class="grid-box-btn" id="girlsBtn" style="flex: 1;">
+                    <span class="lock-badge">🔒 Locked</span>
+                    <img src="https://lh3.googleusercontent.com/d/1Mj3Pjhz51_CMW8zt_yisILSBivRssX-B" class="grid-icon" alt="Girls">
+                    Girl nudes video
+                </button>
+            </div>
+        </div>
 
         <div class="bottom-icons-container">
             <img src="https://lh3.googleusercontent.com/d/13HR-Dy-bCb_SEltunMb0lUc5DoX7O4fL" class="footer-tiny-icon" alt="1">
@@ -865,7 +1105,7 @@ body{
 
         <div class="plan-card">
             <div class="plan-title">Basic Plan</div>
-            <div class="plan-price">₹99 <span style="font-size: 14px; opacity: 0.7;">/ month</span></div>
+            <div class="plan-price">₹20 <span style="font-size: 14px; opacity: 0.7;">/ life time</span></div>
             <ul class="plan-features">
                 <li>✅ Access to all basic videos</li>
                 <li>✅ 720p Video Quality</li>
@@ -877,24 +1117,13 @@ body{
         <div class="plan-card popular">
             <div class="popular-badge">Most Popular</div>
             <div class="plan-title">VIP Premium</div>
-            <div class="plan-price">₹249 <span style="font-size: 14px; opacity: 0.7;">/ 3 months</span></div>
+            <div class="plan-price">₹30 <span style="font-size: 14px; opacity: 0.7;">/ life time</span></div>
             <ul class="plan-features">
                 <li>👑 Full Access to Premium Content</li>
                 <li>👑 1080p HD Video Quality</li>
                 <li>👑 Ad-Free Experience</li>
             </ul>
             <button class="buy-btn" onclick="processPayment('VIP Premium')">Upgrade to VIP</button>
-        </div>
-
-        <div class="plan-card">
-            <div class="plan-title">Lifetime Pass</div>
-            <div class="plan-price">₹999 <span style="font-size: 14px; opacity: 0.7;">/ lifetime</span></div>
-            <ul class="plan-features">
-                <li>✨ One time payment</li>
-                <li>✨ Unlimited Access forever</li>
-                <li>✨ Early Access to new videos</li>
-            </ul>
-            <button class="buy-btn" onclick="processPayment('Lifetime Pass')">Get Lifetime Access</button>
         </div>
 
     </div>
@@ -970,6 +1199,16 @@ body{
     </div>
 </div>
 
+<!-- CUSTOM STYLISH TOAST NOTIFICATION MODAL -->
+<div class="custom-toast-overlay" id="customToastOverlay">
+    <div class="custom-toast-box">
+        <div class="custom-toast-icon">🎉</div>
+        <h3 id="toastTitle">Congratulations</h3>
+        <p id="toastMessage">5-second free VIP trial activated!</p>
+        <button class="custom-toast-btn" id="toastOkBtn">OK</button>
+    </div>
+</div>
+
 <!-- PREMIUM REQUIRED MODAL -->
 <div class="expired-modal-overlay" id="expiredModalOverlay">
     <div class="expired-modal-box">
@@ -978,8 +1217,8 @@ body{
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
             </svg>
         </div>
-        <h2>Premium Access Denied</h2>
-        <p>Aapke paas active VIP Membership nahi hai. Yeh videos dekhne ke liye premium plan lein.</p>
+        <h2>VIP Access Required</h2>
+        <p id="modalDescText">Yeh section access karne ke liye permanent VIP membership lena zaroori hai.</p>
         <div class="expired-btns-row">
             <button class="expired-btn-later" id="expiredLaterBtn">Cancel</button>
             <button class="expired-btn-renew" id="expiredRenewBtn">👑 Get Premium</button>
@@ -1026,7 +1265,7 @@ body{
             <span id="themeText">Dark Mode</span>
         </a>
         <a href="#" class="sidebar-link">
-            <img src="https://lh3.googleusercontent.com/d/1YBgjM8tmNOhDYiBNRkbwl7ojEivZijQF" class="sidebar-icon" alt="Settings">
+            <img src="https://lh3.googleusercontent.com/d/1YBgjM8tmNOhDYiBNRkbwl7ojEijQF" class="sidebar-icon" alt="Settings">
             Settings
         </a>
         <!-- Logout Link -->
@@ -1041,7 +1280,7 @@ body{
     const firebaseConfig = {
       apiKey: "AIzaSyDI7yuJx1COt5OeHx8L9TWwdLRXSj1MqZo",
       authDomain: "playtime-f5bd9.firebaseapp.com",
-      databaseURL: "https://playtime-f5bd9-default-rtdb.firebaseio.com", // Ensure your Realtime Database URL is here
+      databaseURL: "https://playtime-f5bd9-default-rtdb.firebaseio.com",
       projectId: "playtime-f5bd9",
       storageBucket: "playtime-f5bd9.firebasestorage.app",
       messagingSenderId: "339670579331",
@@ -1056,6 +1295,12 @@ body{
     const expiredModalOverlay = document.getElementById('expiredModalOverlay');
     const expiredLaterBtn = document.getElementById('expiredLaterBtn');
     const expiredRenewBtn = document.getElementById('expiredRenewBtn');
+    const modalDescText = document.getElementById('modalDescText');
+    
+    // Custom Toast Elements
+    const customToastOverlay = document.getElementById('customToastOverlay');
+    const toastOkBtn = document.getElementById('toastOkBtn');
+
     const loginBtn = document.getElementById('loginBtn');
     const vipBadgeTag = document.getElementById('vipBadgeTag');
     
@@ -1065,18 +1310,19 @@ body{
     const sidebarUserStatus = document.getElementById('sidebarUserStatus');
     const logoutSidebarLink = document.getElementById('logoutSidebarLink');
 
-    // Global variable to track current user's VIP status from Firebase
-    let isUserVip = false;
+    // Free Trial Button Element
+    const freeTrialBtn = document.getElementById('freeTrialBtn');
 
-    // Function to check Firebase Database for VIP access
+    let isPermanentVip = false; 
+
+    // Check Firebase Database for Permanent VIP access
     function checkFirebaseVipStatus(user, callback) {
         if (!user || !user.email) {
             callback(false);
             return;
         }
 
-        // Clean email to use as firebase key (replace dots with commas because firebase keys cannot contain '.')
-        let safeEmailKey = user.email.toLowerCase().trim().replace(/\./g, '_');
+        let safeEmailKey = user.email.toLowerCase().trim().replace(/[@\.]/g, '_');
 
         db.ref('vip_users/' + safeEmailKey).once('value')
             .then((snapshot) => {
@@ -1093,6 +1339,58 @@ body{
             });
     }
 
+    // Free Trial & 3-Hour Cooldown Logic
+    function updateTrialButtonState() {
+        const trialEndTime = localStorage.getItem('trialEndTime');
+        const nextAllowedClickTime = localStorage.getItem('nextAllowedClickTime');
+        const now = new Date().getTime();
+
+        if (trialEndTime && now < parseInt(trialEndTime)) {
+            // Trial is currently active (5 seconds remaining)
+            const remainingSec = Math.ceil((parseInt(trialEndTime) - now) / 1000);
+            freeTrialBtn.disabled = true;
+            freeTrialBtn.querySelector('span').innerText = `🎁 Active: ${remainingSec}s`;
+            setTimeout(updateTrialButtonState, 1000);
+        } else if (nextAllowedClickTime && now < parseInt(nextAllowedClickTime)) {
+            // 3-hour cooldown is active
+            const diff = parseInt(nextAllowedClickTime) - now;
+            const hours = Math.floor(diff / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+            
+            freeTrialBtn.disabled = true;
+            freeTrialBtn.querySelector('span').innerText = `⏳ Wait ${hours}h ${minutes}m ${seconds}s`;
+            setTimeout(updateTrialButtonState, 1000);
+        } else {
+            // Ready to click again
+            freeTrialBtn.disabled = false;
+            freeTrialBtn.querySelector('span').innerText = `🎁 Free 5-Sec VIP`;
+        }
+    }
+
+    function startFreeTrial() {
+        const now = new Date().getTime();
+        const trialEndTime = now + (5 * 1000); // 5 seconds trial
+        const nextAllowedClickTime = now + (3 * 60 * 60 * 1000); // 3 hours cooldown
+
+        localStorage.setItem('trialEndTime', trialEndTime);
+        localStorage.setItem('nextAllowedClickTime', nextAllowedClickTime);
+        
+        customToastOverlay.classList.add('active');
+        updateTrialButtonState();
+    }
+
+    toastOkBtn.addEventListener('click', () => {
+        customToastOverlay.classList.remove('active');
+    });
+
+    freeTrialBtn.addEventListener('click', () => {
+        startFreeTrial();
+    });
+
+    // Initialize button state on load
+    updateTrialButtonState();
+
     auth.onAuthStateChanged((user) => {
         if (user) {
             const userEmail = user.email ? user.email.toLowerCase().trim() : "";
@@ -1103,32 +1401,33 @@ body{
             if (sidebarUserProfile) sidebarUserProfile.style.display = 'flex';
             if (sidebarUserAvatar) sidebarUserAvatar.src = userPhoto;
             if (sidebarUserName) sidebarUserName.innerText = userName;
-            if (logoutSidebarLink) logoutSidebarLink.style.display = 'flex';
 
-            // Check VIP Status from Firebase Database
-            checkFirebaseVipStatus(user, (vipStatus) => {
-                isUserVip = vipStatus;
-
-                if (isUserVip) {
+            checkFirebaseVipStatus(user, (dbVipStatus) => {
+                if (dbVipStatus) {
+                    isPermanentVip = true;
                     if (sidebarUserStatus) sidebarUserStatus.innerText = "👑 Exclusive VIP Member";
                     if (vipBadgeTag) vipBadgeTag.style.display = 'inline-block';
                     sidebarUserProfile.classList.add('vip-profile-card');
                     document.getElementById('navPremiumBtn').style.display = 'none';
+                    
+                    document.querySelectorAll('.lock-badge').forEach(badge => badge.style.display = 'none');
                 } else {
+                    isPermanentVip = false;
                     if (sidebarUserStatus) sidebarUserStatus.innerText = "Free Member";
                     sidebarUserProfile.classList.remove('vip-profile-card');
                     if (vipBadgeTag) vipBadgeTag.style.display = 'none';
+                    document.querySelectorAll('.lock-badge').forEach(badge => badge.style.display = 'flex');
                 }
             });
 
         } else {
-            isUserVip = false;
+            isPermanentVip = false;
             if (loginBtn) loginBtn.style.display = 'flex';
             if (sidebarUserProfile) sidebarUserProfile.style.display = 'none';
             if (logoutSidebarLink) logoutSidebarLink.style.display = 'none';
-            if (vipBadgeTag) vipBadgeTag.style.display = 'none';
             if (sidebarUserProfile) sidebarUserProfile.classList.remove('vip-profile-card');
             if (navPremiumBtn) navPremiumBtn.style.display = 'flex';
+            document.querySelectorAll('.lock-badge').forEach(badge => badge.style.display = 'flex');
         }
     });
 
@@ -1168,7 +1467,11 @@ body{
     const girlsView = document.getElementById('girlsView');
 
     const instaBtn = document.getElementById('instaBtn');
+    const japBtn = document.getElementById('japBtn');
+    const usBtn = document.getElementById('usBtn');
+    const desiBtn = document.getElementById('desiBtn');
     const girlsBtn = document.getElementById('girlsBtn');
+
     const navPremiumBtn = document.getElementById('navPremiumBtn');
     const sidebarPremiumLink = document.getElementById('sidebarPremiumLink');
 
@@ -1232,15 +1535,14 @@ body{
 
     closeBtn.addEventListener('click', () => {
         sidebar.classList.remove('active');
-        overlay.classList.remove('active');
+        overlay.classList.add('active');
     });
 
     overlay.addEventListener('click', () => {
         sidebar.classList.remove('active');
-        overlay.classList.remove('active');
+        overlay.classList.add('active');
     });
 
-    // Navigation Logic
     function showView(viewToShow) {
         closeTheaterMode();
         stopAllVideos();
@@ -1254,8 +1556,26 @@ body{
         overlay.classList.remove('active');
     }
 
-    instaBtn.addEventListener('click', () => showView(instaView));
-    girlsBtn.addEventListener('click', () => showView(girlsView));
+    function handleProtectedClick(targetView) {
+        const trialEndTime = localStorage.getItem('trialEndTime');
+        const now = new Date().getTime();
+        const hasActiveTrial = trialEndTime && now < parseInt(trialEndTime);
+
+        if (!isPermanentVip && !hasActiveTrial) {
+            modalDescText.innerText = "Yeh section access karne ke liye permanent VIP membership lena zaroori hai ya Free Trial activate karein.";
+            expiredModalOverlay.classList.add('active');
+            return;
+        }
+        showView(targetView);
+    }
+
+    instaBtn.addEventListener('click', () => handleProtectedClick(instaView));
+    girlsBtn.addEventListener('click', () => handleProtectedClick(girlsView));
+    
+    japBtn.addEventListener('click', () => handleProtectedClick(instaView));
+    usBtn.addEventListener('click', () => handleProtectedClick(instaView));
+    desiBtn.addEventListener('click', () => handleProtectedClick(instaView));
+
     navPremiumBtn.addEventListener('click', () => showView(premiumView));
     sidebarPremiumLink.addEventListener('click', () => showView(premiumView));
 
@@ -1265,14 +1585,22 @@ body{
     menuHomeLink.addEventListener('click', () => showView(homeView));
 
     function processPayment(planName) {
-        alert("Redirecting to payment gateway for " + planName + "...\n(Note: Integrate Razorpay/Stripe here in the future)");
+        alert("Redirecting to payment gateway for " + planName + "...");
+    }
+
+    function filterCategory(categoryName) {
+        alert("Filtering by: " + categoryName);
     }
 
     function handleVideoPlayAttempt(targetId, e) {
         e.stopPropagation();
 
-        // Agar user VIP nahi hai, toh direct premium popup aa jayega
-        if (!isUserVip) {
+        const trialEndTime = localStorage.getItem('trialEndTime');
+        const now = new Date().getTime();
+        const hasActiveTrial = trialEndTime && now < parseInt(trialEndTime);
+
+        if (!isPermanentVip && !hasActiveTrial) {
+            modalDescText.innerText = "Aapke paas active VIP Membership ya trial nahi hai. Yeh videos dekhne ke liye membership lein.";
             expiredModalOverlay.classList.add('active');
             return;
         }
@@ -1293,7 +1621,7 @@ body{
     });
 
     customFsBtns.forEach(btn => {
-        btn.addEventListener('click', (e) => handleVideoProfilePlayAttempt = handleVideoPlayAttempt(btn.getAttribute('data-video'), e));
+        btn.addEventListener('click', (e) => handleVideoPlayAttempt(btn.getAttribute('data-video'), e));
     });
 
     function closeTheaterMode() {
