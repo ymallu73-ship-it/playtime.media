@@ -1026,9 +1026,9 @@ body{
 
         <!-- Dono Buttons Side by Side (GIF ke Neeche) -->
         <div class="top-buttons-row">
-            <!-- Free 5-Sec Trial Button (Testing Mode Active) -->
+            <!-- Free 10-Min Trial Button -->
             <button class="option-btn free-trial-btn" id="freeTrialBtn">
-                <span>🎁 Free 5-Sec VIP</span>
+                <span>🎁 Free 10-Min VIP</span>
             </button>
 
             <!-- Premium Button -->
@@ -1204,7 +1204,7 @@ body{
     <div class="custom-toast-box">
         <div class="custom-toast-icon">🎉</div>
         <h3 id="toastTitle">Congratulations</h3>
-        <p id="toastMessage">5-second free VIP trial activated!</p>
+        <p id="toastMessage">10-minute free VIP trial activated!</p>
         <button class="custom-toast-btn" id="toastOkBtn">OK</button>
     </div>
 </div>
@@ -1339,17 +1339,20 @@ body{
             });
     }
 
-    // Free Trial & 3-Hour Cooldown Logic
+    // Free Trial (10 Minutes) & 3-Hour Cooldown Logic
     function updateTrialButtonState() {
         const trialEndTime = localStorage.getItem('trialEndTime');
         const nextAllowedClickTime = localStorage.getItem('nextAllowedClickTime');
         const now = new Date().getTime();
 
         if (trialEndTime && now < parseInt(trialEndTime)) {
-            // Trial is currently active (5 seconds remaining)
-            const remainingSec = Math.ceil((parseInt(trialEndTime) - now) / 1000);
+            // Trial is currently active (10 minutes remaining)
+            const diff = parseInt(trialEndTime) - now;
+            const minutes = Math.floor(diff / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+            
             freeTrialBtn.disabled = true;
-            freeTrialBtn.querySelector('span').innerText = `🎁 Active: ${remainingSec}s`;
+            freeTrialBtn.querySelector('span').innerText = `🎁 Active: ${minutes}m ${seconds}s`;
             setTimeout(updateTrialButtonState, 1000);
         } else if (nextAllowedClickTime && now < parseInt(nextAllowedClickTime)) {
             // 3-hour cooldown is active
@@ -1364,13 +1367,13 @@ body{
         } else {
             // Ready to click again
             freeTrialBtn.disabled = false;
-            freeTrialBtn.querySelector('span').innerText = `🎁 Free 5-Sec VIP`;
+            freeTrialBtn.querySelector('span').innerText = `🎁 Free 10-Min VIP`;
         }
     }
 
     function startFreeTrial() {
         const now = new Date().getTime();
-        const trialEndTime = now + (5 * 1000); // 5 seconds trial
+        const trialEndTime = now + (10 * 60 * 1000); // 10 minutes trial
         const nextAllowedClickTime = now + (3 * 60 * 60 * 1000); // 3 hours cooldown
 
         localStorage.setItem('trialEndTime', trialEndTime);
