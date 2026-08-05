@@ -1262,7 +1262,7 @@ body{
 </head>
 <body>
 
-<!-- 18+ AGE VERIFICATION MODAL (Session-based: हर नए सेशन/टैब में खुलेगा) -->
+<!-- 18+ AGE VERIFICATION MODAL -->
 <div class="age-verify-overlay" id="ageVerifyOverlay">
     <div class="age-verify-box">
         <span class="age-verify-badge">18+ RESTRICTED</span>
@@ -1316,7 +1316,7 @@ body{
             </button>
         </div>
 
-        <!-- Free Section Wrapper containing 'For You' and 'Trending' buttons with fire emoji -->
+        <!-- Free Section Banner Wrapper -->
         <div class="free-section-wrapper">
             <div class="free-section-title">🔥 FREE CONTENT 🔥</div>
             <div class="button-row" style="margin-bottom: 0;">
@@ -1483,7 +1483,6 @@ body{
             <h2 id="categoryPageTitle">Category Content</h2>
         </div>
         
-        <!-- For You / Trending के लिए पुरानी वीडियो -->
         <div class="video-card for-you-item" id="forYouVideoContainer">
             <div class="video-player-container">
                 <video id="githubForYouVideo" src="https://github.com/ymallu73-ship-it/playtime.media/raw/refs/heads/main/VID-20231023-WA0180(1).mp4" preload="metadata" muted playsinline></video>
@@ -1512,9 +1511,7 @@ body{
             </div>
         </div>
 
-        <!-- ================= TRENDING 4 VIDEOS ================= -->
-        
-        <!-- Trending Video 1 -->
+        <!-- TRENDING VIDEOS -->
         <div class="video-card trending-item" style="display: none;" id="trendingVideoContainer1">
             <div class="video-player-container">
                 <video id="trendingVideo1" src="https://github.com/ymallu73-ship-it/Video/raw/refs/heads/main/1Zup60ITJswiYSi9(TG-Bhat%20kanda%20official)(1).mp4" preload="metadata" muted playsinline></video>
@@ -1529,7 +1526,6 @@ body{
             </div>
         </div>
 
-        <!-- Trending Video 2 -->
         <div class="video-card trending-item" style="display: none;" id="trendingVideoContainer2">
             <div class="video-player-container">
                 <video id="trendingVideo2" src="https://github.com/ymallu73-ship-it/Video/raw/refs/heads/main/INDIAN%20SMALL%20BOYS%20WITH%20YOUNG%20SISTERS%20120%20VIDEOS.mp4" preload="metadata" muted playsinline></video>
@@ -1544,7 +1540,6 @@ body{
             </div>
         </div>
 
-        <!-- Trending Video 3 -->
         <div class="video-card trending-item" style="display: none;" id="trendingVideoContainer3">
             <div class="video-player-container">
                 <video id="trendingVideo3" src="https://github.com/ymallu73-ship-it/Video/raw/refs/heads/main/mom%20_%20Son%20HD8377321876489487830.mp4" preload="metadata" muted playsinline></video>
@@ -1559,7 +1554,6 @@ body{
             </div>
         </div>
 
-        <!-- Trending Video 4 -->
         <div class="video-card trending-item" style="display: none;" id="trendingVideoContainer4">
             <div class="video-player-container">
                 <video id="trendingVideo4" src="https://github.com/ymallu73-ship-it/Video/raw/refs/heads/main/c77fe4c547aace6b16010f57fe11dd3c_4803401399935302582877_2.mp4" preload="metadata" muted playsinline></video>
@@ -1573,12 +1567,11 @@ body{
                 </div>
             </div>
         </div>
-        <!-- ================= END OF TRENDING VIDEOS ================= -->
 
     </div>
 </div>
 
-<!-- CUSTOM STYLISH TOAST NOTIFICATION MODAL -->
+<!-- TOAST NOTIFICATION -->
 <div class="custom-toast-overlay" id="customToastOverlay">
     <div class="custom-toast-box">
         <div class="custom-toast-icon">🎉</div>
@@ -1597,7 +1590,7 @@ body{
             </svg>
         </div>
         <h2>VIP Access Required</h2>
-        <p id="modalDescText">यह पेज खोलने के लिए पहले 10 मिनट फ्री एक्सेस बटन पर क्लिक करें या VIP Membership लें।</p>
+        <p id="modalDescText">यह पेज खोलने के लिए VIP Membership लें।</p>
         <div class="expired-btns-row">
             <button class="expired-btn-later" id="expiredLaterBtn">Cancel</button>
             <button class="expired-btn-renew" id="expiredRenewBtn">👑 Get Premium</button>
@@ -1687,7 +1680,7 @@ body{
     const auth = firebase.auth();
     const db = firebase.database();
 
-    // 18+ Age Verification Logic (Session-based: हर नए टैब/विंडो में एक बार पूछना अनिवार्य)
+    // 18+ Age Verification Logic
     const ageVerifyOverlay = document.getElementById('ageVerifyOverlay');
     const ageYesBtn = document.getElementById('ageYesBtn');
     const ageNoBtn = document.getElementById('ageNoBtn');
@@ -1719,7 +1712,6 @@ body{
     const customToastOverlay = document.getElementById('customToastOverlay');
     const toastOkBtn = document.getElementById('toastOkBtn');
 
-    // Premium Code Modal Elements
     const codeModalOverlay = document.getElementById('codeModalOverlay');
     const vipCodeInput = document.getElementById('vipCodeInput');
     const codeCancelBtn = document.getElementById('codeCancelBtn');
@@ -2074,20 +2066,22 @@ body{
         return (trialEndTime && now < parseInt(trialEndTime));
     }
 
-    function handlePermanentVipClick(targetView) {
-        if (!hasActiveAccess()) {
-            if(modalDescText) modalDescText.innerText = "यह पेज खोलने के लिए पहले 10 मिनट फ्री एक्सेस बटन पर क्लिक करें या VIP Membership लें।";
+    // --- UPDATED: लॉक वाले बटन्स के लिए सिर्फ परमानेंट VIP चेक ---
+    function handleLockedVipClick(targetView) {
+        if (!isPermanentVip) {
+            if(modalDescText) modalDescText.innerText = "यह प्रीमियम सेक्शन है! इसे खोलने के लिए केवल VIP Membership (या कोड) की आवश्यकता है।";
             if(expiredModalOverlay) expiredModalOverlay.classList.add('active');
             return;
         }
         showView(targetView);
     }
 
-    if(instaBtn) instaBtn.addEventListener('click', () => handlePermanentVipClick(instaView));
-    if(girlsBtn) girlsBtn.addEventListener('click', () => handlePermanentVipClick(girlsView));
-    if(japBtn) japBtn.addEventListener('click', () => handlePermanentVipClick(instaView));
-    if(usBtn) usBtn.addEventListener('click', () => handlePermanentVipClick(instaView));
-    if(desiBtn) desiBtn.addEventListener('click', () => handlePermanentVipClick(instaView));
+    // अब लॉक वाले सभी बटन सिर्फ परमानेंट VIP/प्रीमियम यूजर के लिए चलेंगे
+    if(instaBtn) instaBtn.addEventListener('click', () => handleLockedVipClick(instaView));
+    if(girlsBtn) girlsBtn.addEventListener('click', () => handleLockedVipClick(girlsView));
+    if(japBtn) japBtn.addEventListener('click', () => handleLockedVipClick(instaView));
+    if(usBtn) usBtn.addEventListener('click', () => handleLockedVipClick(instaView));
+    if(desiBtn) desiBtn.addEventListener('click', () => handleLockedVipClick(instaView));
 
     if(navPremiumBtn) navPremiumBtn.addEventListener('click', () => showView(premiumView));
     if(sidebarPremiumLink) sidebarPremiumLink.addEventListener('click', () => showView(premiumView));
