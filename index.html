@@ -1,119 +1,2196 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Open Noor Baby</title>
-    <style>
-        body {
-            margin: 0;
-            background-color: #000000;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-        canvas {
-            background-color: #000000;
-            display: block;
-        }
-        #centerBox {
-            position: absolute;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-            z-index: 10;
-        }
-        #loveText {
-            font-size: 32px;
-            font-weight: bold;
-            color: #ff3366;
-            text-shadow: 0 0 15px rgba(255, 51, 102, 0.8);
-            font-family: Arial, sans-serif;
-            text-align: center;
-        }
-        #openBtn {
-            padding: 15px 30px;
-            font-size: 20px;
-            font-weight: bold;
-            color: #ffffff;
-            background: linear-gradient(45deg, #ff3366, #ff66b2);
-            border: none;
-            border-radius: 30px;
-            cursor: pointer;
-            box-shadow: 0 0 20px rgba(255, 51, 102, 0.6);
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Playtime</title>
+
+<!-- Firebase App & Database SDKs (Compat Version) -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+<style>
+/* --- Light Mode Colors (Default) --- */
+:root {
+    --bg-color: #f0f6ff;
+    --text-color: #1e293b;
+    --header-bg: #ffffff;
+    --header-border: #dbeafe;
+    --card-bg: #ffffff;
+    --card-border: #bfdbfe;
+    --btn-bg: #eff6ff;
+    --btn-hover: #dbeafe;
+    --primary-color: #1d4ed8;
+    --sidebar-bg: #ffffff;
+    --sidebar-shadow: rgba(37, 99, 235, 0.15);
+    --badge-bg: #eff6ff;
+    --badge-text: #2563eb;
+}
+
+/* --- Dark Mode Colors --- */
+[data-theme="dark"] {
+    --bg-color: #0f172a;
+    --text-color: #f1f5f9;
+    --header-bg: #1e293b;
+    --header-border: #334155;
+    --card-bg: #1e293b;
+    --card-border: #334155;
+    --btn-bg: #334155;
+    --btn-hover: #475569;
+    --primary-color: #60a5fa;
+    --sidebar-bg: #1e293b;
+    --sidebar-shadow: rgba(0, 0, 0, 0.5);
+    --badge-bg: #334155;
+    --badge-text: #60a5fa;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body{
+    background: var(--bg-color);
+    color: var(--text-color);
+    overflow-x:hidden;
+    min-height: 100vh;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* --- 18+ Age Verification Modal Styles --- */
+.age-verify-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(10, 14, 23, 0.92);
+    backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+}
+
+.age-verify-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.age-verify-box {
+    width: 90%;
+    max-width: 380px;
+    background: #181b22;
+    border: 1.5px solid rgba(239, 68, 68, 0.4);
+    border-radius: 28px;
+    padding: 32px 24px;
+    text-align: center;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+    transform: scale(0.85);
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.age-verify-overlay.active .age-verify-box {
+    transform: scale(1);
+}
+
+.age-verify-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 800;
+    padding: 6px 16px;
+    border-radius: 12px;
+    margin-bottom: 18px;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+}
+
+.age-verify-box h2 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 10px;
+}
+
+.age-verify-box p {
+    font-size: 13px;
+    line-height: 1.6;
+    color: #94a3b8;
+    margin-bottom: 24px;
+}
+
+.age-verify-btns {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.age-btn-yes {
+    width: 100%;
+    height: 50px;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    border: none;
+    border-radius: 14px;
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);
+    transition: opacity 0.2s;
+}
+
+.age-btn-yes:hover {
+    opacity: 0.9;
+}
+
+.age-btn-no {
+    width: 100%;
+    height: 46px;
+    background: #232733;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    color: #94a3b8;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+.age-btn-no:hover {
+    background: #2a303e;
+    color: #ffffff;
+}
+
+/* VIP Badge Tag in Header */
+.vip-badge-tag {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 6px;
+    margin-left: 6px;
+    display: none;
+    letter-spacing: 0.5px;
+}
+
+/* --- Free Section Banner Styles --- */
+.free-section-wrapper {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    padding: 12px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.free-section-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #16a34a;
+    text-align: center;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+}
+
+/* --- Custom Toast Notification Popup --- */
+.custom-toast-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 99999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.custom-toast-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.custom-toast-box {
+    width: 85%;
+    max-width: 320px;
+    background: #181b22;
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    border-radius: 24px;
+    padding: 26px 20px;
+    text-align: center;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.6);
+    transform: scale(0.85);
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.custom-toast-overlay.active .custom-toast-box {
+    transform: scale(1);
+}
+
+.custom-toast-icon {
+    font-size: 40px;
+    margin-bottom: 12px;
+    animation: bounceIcon 1s infinite alternate;
+}
+
+@keyframes bounceIcon {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-6px); }
+}
+
+.custom-toast-box h3 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 8px;
+}
+
+.custom-toast-box p {
+    font-size: 13px;
+    line-height: 1.5;
+    color: #94a3b8;
+    margin-bottom: 20px;
+}
+
+.custom-toast-btn {
+    width: 100%;
+    height: 44px;
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    border: none;
+    border-radius: 12px;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+}
+
+/* --- Premium Required Modal --- */
+.expired-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 99999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.expired-modal-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.expired-modal-box {
+    width: 90%;
+    max-width: 360px;
+    background: #181b22;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 24px;
+    padding: 28px 20px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+}
+
+.expired-modal-overlay.active .expired-modal-box {
+    transform: scale(1);
+}
+
+.expired-icon-circle {
+    width: 64px;
+    height: 64px;
+    background: #23221b;
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    border-radius: 20px;
+    margin: 0 auto 20px auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.expired-icon-circle svg {
+    width: 32px;
+    height: 32px;
+    stroke: #f59e0b;
+}
+
+.expired-modal-box h2 {
+    font-size: 22px;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 12px;
+}
+
+.expired-modal-box p {
+    font-size: 13px;
+    line-height: 1.5;
+    color: #94a3b8;
+    margin-bottom: 24px;
+}
+
+.expired-btns-row {
+    display: flex;
+    gap: 12px;
+}
+
+.expired-btn-later {
+    flex: 1;
+    height: 48px;
+    background: #232733;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 14px;
+    color: #cbd5e1;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.expired-btn-renew {
+    flex: 1;
+    height: 48px;
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    border: none;
+    border-radius: 14px;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+}
+
+/* --- Premium Code Modal UI Styles --- */
+.code-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(6px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.code-modal-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.code-modal-box {
+    width: 90%;
+    max-width: 360px;
+    background: #181b22;
+    border: 1px solid rgba(191, 149, 63, 0.3);
+    border-radius: 24px;
+    padding: 30px 22px;
+    text-align: center;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+    transform: scale(0.85);
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.code-modal-overlay.active .code-modal-box {
+    transform: scale(1);
+}
+
+.code-modal-icon-circle {
+    width: 68px;
+    height: 68px;
+    background: linear-gradient(135deg, rgba(191, 149, 63, 0.15), rgba(252, 204, 102, 0.1));
+    border: 1.5px solid #bf953f;
+    border-radius: 20px;
+    margin: 0 auto 18px auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 32px;
+    box-shadow: 0 0 15px rgba(191, 149, 63, 0.25);
+}
+
+.code-modal-box h2 {
+    font-size: 22px;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 8px;
+}
+
+.code-modal-box p {
+    font-size: 13px;
+    line-height: 1.5;
+    color: #94a3b8;
+    margin-bottom: 20px;
+}
+
+.code-input-field {
+    width: 100%;
+    height: 50px;
+    background: #232733;
+    border: 1.5px solid rgba(255, 255, 255, 0.1);
+    border-radius: 14px;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 600;
+    text-align: center;
+    letter-spacing: 1px;
+    margin-bottom: 16px;
+    outline: none;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.code-input-field:focus {
+    border-color: #bf953f;
+    box-shadow: 0 0 10px rgba(191, 149, 63, 0.3);
+}
+
+.code-input-field::placeholder {
+    color: #64748b;
+    letter-spacing: normal;
+    font-weight: 400;
+}
+
+.code-btns-row {
+    display: flex;
+    gap: 10px;
+}
+
+.code-btn-cancel {
+    flex: 1;
+    height: 48px;
+    background: #232733;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 14px;
+    color: #cbd5e1;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.code-btn-cancel:hover {
+    background: #2a303e;
+}
+
+.code-btn-submit {
+    flex: 1;
+    height: 48px;
+    background: linear-gradient(135deg, #bf953f, #b38728);
+    border: none;
+    border-radius: 14px;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(191, 149, 63, 0.3);
+    transition: opacity 0.2s;
+}
+
+.code-btn-submit:hover {
+    opacity: 0.9;
+}
+
+/* Header */
+.header{
+    width:100%;
+    height:64px;
+    background: var(--header-bg);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:0 20px;
+    position:sticky;
+    top:0;
+    z-index:10;
+    border-bottom: 1px solid var(--header-border);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.header-left{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.logo-box {
+    width: 38px;
+    height: 38px;
+    background: var(--btn-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.header-logo{
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    object-fit: cover;
+}
+
+.header h1{
+    font-size:20px;
+    font-weight:700;
+    color: var(--primary-color);
+}
+
+.header-right{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.google-login-btn{
+    height:36px;
+    background: var(--btn-bg);
+    border:1px solid var(--card-border);
+    border-radius:10px;
+    color: var(--primary-color);
+    font-size:12px;
+    font-weight:600;
+    padding:0 14px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    cursor:pointer;
+}
+
+.google-login-btn img{
+    width:14px;
+    height:14px;
+}
+
+.menu-btn{
+    width:36px;
+    height:36px;
+    border-radius:10px;
+    background: var(--btn-bg);
+    border:1px solid var(--card-border);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    cursor:pointer;
+}
+
+.menu-icon{
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+}
+
+.menu-icon span{
+    width:16px;
+    height:2px;
+    background: var(--primary-color);
+    border-radius:10px;
+}
+
+.view-section {
+    display: none;
+}
+
+.view-section.active {
+    display: block;
+}
+
+.main{
+    padding:20px;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+#homeView .main {
+    display: flex;
+    flex-direction: column;
+    min-height: auto; 
+}
+
+.gif-container{
+    width:100%;
+    height:80px;
+    margin-bottom: 15px;
+    border-radius:16px;
+    overflow:hidden;
+    border: 1px solid var(--card-border);
+    background: var(--card-bg);
+}
+
+.gif-container img{
+    width:100%;
+    height:100%;
+    object-fit: cover;
+    object-position: center 20%;
+}
+
+.top-buttons-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.option-btn{
+    width:100%;
+    height:64px;
+    background: var(--card-bg);
+    border:1px solid var(--card-border);
+    border-radius:16px;
+    color: var(--text-color);
+    display:flex;
+    align-items:center;
+    gap:16px;
+    padding:0 18px;
+    margin-bottom:15px;
+    font-size:15px;
+    font-weight:600;
+    cursor:pointer;
+    transition: 0.2s;
+}
+
+.option-btn:hover {
+    background: var(--btn-bg);
+    border-color: var(--primary-color);
+}
+
+@keyframes goldShine {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.top-buttons-row .premium-upgrade-btn {
+    flex: 1;
+    background: linear-gradient(135deg, #bf953f, #fc6, #b38728);
+    color: #fff;
+    border: none;
+    justify-content: center;
+    font-size: 13px;
+    box-shadow: 0 3px 10px rgba(191, 149, 63, 0.3);
+    animation: goldShine 5s ease infinite;
+    background-size: 300% 300%;
+    height: 48px;
+    padding: 0 8px;
+    margin-bottom: 0;
+    text-align: center;
+    white-space: nowrap;
+}
+.top-buttons-row .premium-upgrade-btn:hover {
+    background: linear-gradient(135deg, #b38728, #bf953f);
+    color: #fff;
+    border: none;
+}
+
+.top-buttons-row .free-trial-btn {
+    flex: 1;
+    background: linear-gradient(135deg, #2563eb, #3b82f6);
+    color: #fff;
+    border: none;
+    justify-content: center;
+    font-size: 12px;
+    box-shadow: 0 3px 10px rgba(37, 99, 235, 0.3);
+    height: 48px;
+    padding: 0 8px;
+    margin-bottom: 0;
+    text-align: center;
+    white-space: nowrap;
+    transition: background 0.3s ease, transform 0.1s ease;
+}
+.top-buttons-row .free-trial-btn:hover {
+    background: linear-gradient(135deg, #1d4ed8, #2563eb);
+    color: #fff;
+}
+
+.top-buttons-row .free-trial-btn.clicked-color {
+    background: linear-gradient(135deg, #16a34a, #22c55e) !important;
+    box-shadow: 0 3px 10px rgba(34, 197, 94, 0.4) !important;
+}
+
+.top-buttons-row .free-trial-btn:disabled {
+    background: #94a3b8;
+    cursor: not-allowed;
+    box-shadow: none;
+    opacity: 0.7;
+}
+
+.grid-buttons-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 25px;
+    margin-top: 15px; 
+}
+
+.button-row {
+    display: flex;
+    gap: 12px;
+}
+
+.grid-box-btn {
+    flex: 1;
+    height: 75px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    color: var(--text-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.grid-box-btn:hover {
+    background: var(--btn-bg);
+    border-color: var(--primary-color);
+    color: var(--text-color);
+}
+
+.lock-badge {
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #ffffff;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.blue-box-btn {
+    flex: 1;
+    height: 38px;
+    background: #2563eb;
+    border: 1px solid #1d4ed8;
+    border-radius: 10px;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s ease, border-color 0.3s ease;
+    text-align: center;
+    padding: 0 4px;
+    white-space: nowrap;
+    box-shadow: 0 2px 5px rgba(37, 99, 235, 0.2);
+}
+
+.blue-box-btn:hover {
+    background: #1d4ed8;
+    border-color: #1e40af;
+}
+
+.blue-box-btn.clicked-color {
+    background: #9333ea !important;
+    border-color: #7e22ce !important;
+    box-shadow: 0 2px 8px rgba(147, 51, 234, 0.4) !important;
+}
+
+.grid-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.icon{
+    width:40px;
+    height:40px;
+    border-radius:12px;
+    object-fit:cover;
+}
+
+.bottom-icons-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin-top: 10px; 
+    padding-top: 10px;
+    padding-bottom: 20px;
+}
+
+.footer-tiny-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 14px;
+    object-fit: cover;
+    border: 1px solid var(--card-border);
+    background: var(--card-bg);
+}
+
+.back-btn{
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    color: var(--primary-color);
+    font-size: 15px;
+    font-weight: 600;
+    padding: 12px 18px;
+    border-radius: 16px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.page-title-box {
+    width: 100%;
+    padding: 15px 18px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.page-title-box h2 {
+    font-size: 18px;
+    color: var(--text-color);
+}
+
+.plan-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    transition: transform 0.3s ease;
+}
+
+.plan-card.popular {
+    border: 2px solid #bf953f;
+    background: linear-gradient(135deg, rgba(191,149,63,0.05), rgba(252,204,102,0.05));
+    position: relative;
+}
+
+.popular-badge {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #bf953f;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.plan-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-color);
+    margin-bottom: 10px;
+}
+
+.plan-price {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--primary-color);
+    margin-bottom: 15px;
+}
+.plan-card.popular .plan-price {
+    color: #b38728;
+}
+
+.plan-features {
+    list-style: none;
+    margin-bottom: 20px;
+    font-size: 14px;
+    color: var(--text-color);
+    opacity: 0.8;
+}
+
+.plan-features li {
+    margin-bottom: 8px;
+}
+
+.buy-btn {
+    width: 100%;
+    padding: 12px;
+    background: var(--btn-bg);
+    border: 1px solid var(--primary-color);
+    color: var(--primary-color);
+    font-weight: bold;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.plan-card.popular .buy-btn {
+    background: linear-gradient(135deg, #bf953f, #b38728);
+    color: white;
+    border: none;
+}
+
+.video-card {
+    width: 100%;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    margin-bottom: 35px;
+    overflow: hidden;
+}
+
+.video-player-container {
+    position: relative;
+    width: 100%;
+    height: 180px;
+    background: #000;
+}
+
+.video-player-container video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    pointer-events: none;
+}
+
+.next-page-btn {
+    width: 100%;
+    height: 54px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    color: var(--primary-color);
+    font-size: 15px;
+    font-weight: 600;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    margin: 20px 0;
+}
+
+.custom-theater-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(8px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.custom-theater-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.custom-theater-box {
+    position: relative;
+    width: 90%;
+    max-width: 450px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.custom-theater-box video {
+    width: 100%;
+    max-height: 75vh;
+    object-fit: contain;
+    background: #000;
+    display: block;
+    pointer-events: auto;
+}
+
+.theater-close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.6);
+    border: none;
+    color: #fff;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    font-size: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.video-info-bar {
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--card-bg);
+}
+
+.video-title-text {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.video-badges {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.badge, .custom-fs-btn, .custom-play-btn {
+    background: var(--badge-bg);
+    border: 1px solid var(--card-border);
+    color: var(--badge-text);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.custom-play-btn {
+    color: #16a34a;
+}
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    right: -260px;
+    width: 250px;
+    height: 100%;
+    background: var(--sidebar-bg);
+    box-shadow: -5px 0 25px var(--sidebar-shadow);
+    border-left: 1px solid var(--header-border);
+    transition: right 0.3s ease;
+    z-index: 1000;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar.active {
+    right: 0;
+}
+
+.sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.sidebar-header h2 {
+    font-size: 18px;
+    color: var(--primary-color);
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    color: var(--text-color);
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.sidebar-links {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.sidebar-link {
+    color: var(--text-color);
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 500;
+    padding: 10px 12px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+}
+
+.sidebar-link:hover {
+    background: var(--btn-bg);
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+.sidebar-icon {
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
+    object-fit: cover;
+}
+
+.sidebar-user-profile {
+    display: none;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    margin-bottom: 12px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+}
+
+.sidebar-user-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid var(--primary-color);
+}
+
+.sidebar-user-profile.vip-profile-card {
+    background: linear-gradient(135deg, rgba(191, 149, 63, 0.15), rgba(252, 204, 102, 0.1));
+    border: 1.5px solid #bf953f;
+    box-shadow: 0 0 12px rgba(191, 149, 63, 0.25);
+}
+
+.sidebar-user-profile.vip-profile-card .sidebar-user-avatar {
+    border: 2px solid #bf953f;
+    box-shadow: 0 0 8px rgba(191, 149, 63, 0.5);
+}
+
+.sidebar-user-info {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.sidebar-user-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sidebar-user-status {
+    font-size: 11px;
+    color: var(--primary-color);
+}
+
+.sidebar-user-profile.vip-profile-card .sidebar-user-status {
+    color: #b38728;
+    font-weight: 700;
+}
+
+[data-theme="dark"] .sidebar-user-profile.vip-profile-card .sidebar-user-status {
+    color: #fbf5b7;
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(15, 23, 42, 0.5);
+    display: none;
+    z-index: 999;
+}
+
+.overlay.active {
+    display: block;
+}
+</style>
 </head>
 <body>
 
-    <div id="centerBox">
-        <div id="loveText">I Love You Baby ❤️</div>
-        <button id="openBtn" onclick="startAnimation()">open noor baby</button>
+<!-- 18+ AGE VERIFICATION MODAL (Session-based: हर नए सेशन/टैब में खुलेगा) -->
+<div class="age-verify-overlay" id="ageVerifyOverlay">
+    <div class="age-verify-box">
+        <span class="age-verify-badge">18+ RESTRICTED</span>
+        <h2>Age Verification</h2>
+        <p>इस वेबसाइट पर वयस्क (Adult Content) सामग्री उपलब्ध है। प्रवेश करने के लिए पुष्टि करें कि आपकी आयु 18 वर्ष या उससे अधिक है।</p>
+        <div class="age-verify-btns">
+            <button class="age-btn-yes" id="ageYesBtn">I am 18 or Older (Enter)</button>
+            <button class="age-btn-no" id="ageNoBtn">I am under 18 (Exit)</button>
+        </div>
+    </div>
+</div>
+
+<div class="header">
+    <div class="header-left">
+        <div class="logo-box">
+            <img src="https://lh3.googleusercontent.com/d/15w0TjZyDExIc793k9BJgr1aVTSI4k0yd" class="header-logo" alt="Logo">
+        </div>
+        <h1>Playtime <span class="vip-badge-tag" id="vipBadgeTag">VIP</span></h1>
     </div>
 
-    <canvas id="heartCanvas"></canvas>
+    <div class="header-right">
+        <button class="google-login-btn" id="loginBtn">
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+            <span id="loginBtnText">Login</span>
+        </button>
+        <div class="menu-btn" id="menuBtn">
+            <div class="menu-icon">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- HOME VIEW -->
+<div id="homeView" class="view-section active">
+    <div class="main">
+        
+        <div class="gif-container">
+            <img src="https://lh3.googleusercontent.com/d/1c82JhjhupPfLzEAD_VcI1XKgQH4R1u6O" alt="GIF">
+        </div>
+
+        <div class="top-buttons-row" id="topButtonsRow">
+            <button class="option-btn free-trial-btn" id="freeTrialBtn">
+                <span>🎁 Free 10-Min VIP</span>
+            </button>
+
+            <button class="option-btn premium-upgrade-btn" id="navPremiumBtn">
+                👑 Premium Member
+            </button>
+        </div>
+
+        <!-- Free Section Wrapper containing 'For You' and 'Trending' buttons with fire emoji -->
+        <div class="free-section-wrapper">
+            <div class="free-section-title">🔥 FREE CONTENT 🔥</div>
+            <div class="button-row" style="margin-bottom: 0;">
+                <button class="blue-box-btn filter-btn" onclick="filterCategory('forYou', this)">🔥 For You</button>
+                <button class="blue-box-btn filter-btn" onclick="filterCategory('trending', this)">🔥 Trending</button>
+            </div>
+        </div>
+
+        <div class="grid-buttons-container">
+            <div class="button-row">
+                <button class="grid-box-btn" id="instaBtn">
+                    <span class="lock-badge">🔒 Locked</span>
+                    <img src="https://lh3.googleusercontent.com/d/12ZV2Epf3zEF-7a8G_XBSu4gE8w1BUPzH" class="grid-icon" alt="Insta">
+                    Instagram viral video
+                </button>
+                <button class="grid-box-btn" id="japBtn">
+                    <span class="lock-badge">🔒 Locked</span>
+                    <img src="https://lh3.googleusercontent.com/d/1m2m9B0GXc-5t8sB2Se0LLV0BBqN913ks" class="grid-icon" alt="Jap">
+                    Japanese adult videos
+                </button>
+            </div>
+
+            <div class="button-row">
+                <button class="grid-box-btn" id="usBtn">
+                    <span class="lock-badge">🔒 Locked</span>
+                    <img src="https://lh3.googleusercontent.com/d/1R6qmY9bL6qw3oKeuC5n1IyMGZ27BEKGf" class="grid-icon" alt="US">
+                    American adult videos
+                </button>
+                <button class="grid-box-btn" id="desiBtn">
+                    <span class="lock-badge">🔒 Locked</span>
+                    <img src="https://lh3.googleusercontent.com/d/1EOTFIc7AAesuSY_w7zIrQpQ_a5L7kZ_J" class="grid-icon" alt="Desi">
+                    Desi adult videos
+                </button>
+            </div>
+
+            <div class="button-row">
+                <button class="grid-box-btn" id="girlsBtn" style="flex: 1;">
+                    <span class="lock-badge">🔒 Locked</span>
+                    <img src="https://lh3.googleusercontent.com/d/1Mj3Pjhz51_CMW8zt_yisILSBivRssX-B" class="grid-icon" alt="Girls">
+                    Girl nudes video
+                </button>
+            </div>
+        </div>
+
+        <div class="bottom-icons-container">
+            <img src="https://lh3.googleusercontent.com/d/13HR-Dy-bCb_SEltunMb0lUc5DoX7O4fL" class="footer-tiny-icon" alt="1">
+            <img src="https://lh3.googleusercontent.com/d/1bh5HiNa_q0GIFTQQotJo7VoZ1JvZ1qXd" class="footer-tiny-icon" alt="2">
+            <img src="https://lh3.googleusercontent.com/d/1YcFfnuOYVM6ishN_i5CSXqSAd2AqeJbf" class="footer-tiny-icon" alt="3">
+        </div>
+
+    </div>
+</div>
+
+<!-- PREMIUM PLANS VIEW -->
+<div id="premiumView" class="view-section">
+    <div class="main">
+        <button class="back-btn" id="premiumBackBtn">Back to Home</button>
+
+        <div class="page-title-box" style="justify-content: center; border-color: #bf953f;">
+            <h2>👑 Choose Your Premium Plan</h2>
+        </div>
+
+        <div class="plan-card">
+            <div class="plan-title">Basic Plan</div>
+            <div class="plan-price">₹20 <span style="font-size: 14px; opacity: 0.7;">/ life time</span></div>
+            <ul class="plan-features">
+                <li>✅ Access to all basic videos</li>
+                <li>✅ 720p Video Quality</li>
+                <li>❌ No Ads</li>
+            </ul>
+            <button class="buy-btn" onclick="processPayment('Basic Plan')">Buy Now</button>
+        </div>
+
+        <div class="plan-card popular">
+            <div class="popular-badge">Most Popular</div>
+            <div class="plan-title">VIP Premium</div>
+            <div class="plan-price">₹30 <span style="font-size: 14px; opacity: 0.7;">/ life time</span></div>
+            <ul class="plan-features">
+                <li>👑 Full Access to Premium Content</li>
+                <li>👑 1080p HD Video Quality</li>
+                <li>👑 Ad-Free Experience</li>
+            </ul>
+            <button class="buy-btn" onclick="processPayment('VIP Premium')">Upgrade to VIP</button>
+        </div>
+
+    </div>
+</div>
+
+<!-- INSTAGRAM VIEW -->
+<div id="instaView" class="view-section">
+    <div class="main">
+        <button class="back-btn" id="backBtn">Back to Home</button>
+
+        <div class="page-title-box">
+            <img src="https://lh3.googleusercontent.com/d/12ZV2Epf3zEF-7a8G_XBSu4gE8w1BUPzH" class="icon" alt="Insta">
+            <h2>Instagram Viral Videos</h2>
+        </div>
+
+        <div class="video-card">
+            <div class="video-player-container">
+                <video id="reelVideo1" src="http://hc1.checker.in/file2link/videos/file_576239.mp4/" preload="metadata" muted playsinline></video>
+            </div>
+            <div class="video-info-bar">
+                <span class="video-title-text">🔥 Trending Reel #1</span>
+                <div class="video-badges">
+                    <button class="custom-play-btn" data-video="reelVideo1">▶ Play</button>
+                    <button class="custom-fs-btn" data-video="reelVideo1">Full View</button>
+                    <span class="badge">HD</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="video-card">
+            <div class="video-player-container">
+                <video id="reelVideo2" src="http://hc1.checker.in/file2link/videos/file_576255.mp4/" preload="metadata" muted playsinline></video>
+            </div>
+            <div class="video-info-bar">
+                <span class="video-title-text">🔥 Trending Reel #2</span>
+                <div class="video-badges">
+                    <button class="custom-play-btn" data-video="reelVideo2">▶ Play</button>
+                    <button class="custom-fs-btn" data-video="reelVideo2">Full View</button>
+                    <span class="badge">HD</span>
+                </div>
+            </div>
+        </div>
+
+        <button class="next-page-btn" id="nextPageBtn">Next Page</button>
+    </div>
+</div>
+
+<!-- GIRLS VIEW -->
+<div id="girlsView" class="view-section">
+    <div class="main">
+        <button class="back-btn" id="girlsBackBtn">Back to Home</button>
+
+        <div class="page-title-box">
+            <img src="https://lh3.googleusercontent.com/d/1Mj3Pjhz51_CMW8zt_yisILSBivRssX-B" class="icon" alt="Girls">
+            <h2>Girl Nudes Videos Collection</h2>
+        </div>
+
+        <div class="video-card">
+            <div class="video-player-container">
+                <video id="girlVideo1" src="http://hc1.checker.in/file2link/videos/file_576389.mp4/" preload="metadata" muted playsinline></video>
+            </div>
+            <div class="video-info-bar">
+                <span class="video-title-text">✨ Exclusive Video #1</span>
+                <div class="video-badges">
+                    <button class="custom-play-btn" data-video="girlVideo1">▶ Play</button>
+                    <button class="custom-fs-btn" data-video="girlVideo1">Full View</button>
+                    <span class="badge">HD</span>
+                </div>
+            </div>
+        </div>
+
+        <button class="next-page-btn" id="girlsNextPageBtn">Next Page</button>
+    </div>
+</div>
+
+<!-- CATEGORY FILTER / CONTENT VIEW -->
+<div id="categoryView" class="view-section">
+    <div class="main">
+        <button class="back-btn" id="categoryBackBtn">Back to Home</button>
+        <div class="page-title-box">
+            <h2 id="categoryPageTitle">Category Content</h2>
+        </div>
+        
+        <!-- For You / Trending के लिए पुरानी वीडियो -->
+        <div class="video-card for-you-item" id="forYouVideoContainer">
+            <div class="video-player-container">
+                <video id="githubForYouVideo" src="https://github.com/ymallu73-ship-it/playtime.media/raw/refs/heads/main/VID-20231023-WA0180(1).mp4" preload="metadata" muted playsinline></video>
+            </div>
+            <div class="video-info-bar">
+                <span class="video-title-text" id="categoryContentTitle">✨ For You Special Video #1</span>
+                <div class="video-badges">
+                    <button class="custom-play-btn" data-video="githubForYouVideo">▶ Play</button>
+                    <button class="custom-fs-btn" data-video="githubForYouVideo">Full View</button>
+                    <span class="badge">HD</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="video-card for-you-item" id="forYouVideoContainer2">
+            <div class="video-player-container">
+                <video id="archiveForYouVideo2" src="https://archive.org/download/mojo-1560/Mojo1560.mp4" preload="metadata" muted playsinline></video>
+            </div>
+            <div class="video-info-bar">
+                <span class="video-title-text">✨ For You Special Video #2</span>
+                <div class="video-badges">
+                    <button class="custom-play-btn" data-video="archiveForYouVideo2">▶ Play</button>
+                    <button class="custom-fs-btn" data-video="archiveForYouVideo2">Full View</button>
+                    <span class="badge">HD</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TRENDING 4 VIDEOS ================= -->
+        
+        <!-- Trending Video 1 -->
+        <div class="video-card trending-item" style="display: none;" id="trendingVideoContainer1">
+            <div class="video-player-container">
+                <video id="trendingVideo1" src="https://github.com/ymallu73-ship-it/Video/raw/refs/heads/main/1Zup60ITJswiYSi9(TG-Bhat%20kanda%20official)(1).mp4" preload="metadata" muted playsinline></video>
+            </div>
+            <div class="video-info-bar">
+                <span class="video-title-text">🔥 Trending Video #1 (Bhat Kanda)</span>
+                <div class="video-badges">
+                    <button class="custom-play-btn" data-video="trendingVideo1">▶ Play</button>
+                    <button class="custom-fs-btn" data-video="trendingVideo1">Full View</button>
+                    <span class="badge">HD</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Trending Video 2 -->
+        <div class="video-card trending-item" style="display: none;" id="trendingVideoContainer2">
+            <div class="video-player-container">
+                <video id="trendingVideo2" src="https://github.com/ymallu73-ship-it/Video/raw/refs/heads/main/INDIAN%20SMALL%20BOYS%20WITH%20YOUNG%20SISTERS%20120%20VIDEOS.mp4" preload="metadata" muted playsinline></video>
+            </div>
+            <div class="video-info-bar">
+                <span class="video-title-text">🔥 Trending Video #2</span>
+                <div class="video-badges">
+                    <button class="custom-play-btn" data-video="trendingVideo2">▶ Play</button>
+                    <button class="custom-fs-btn" data-video="trendingVideo2">Full View</button>
+                    <span class="badge">HD</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Trending Video 3 -->
+        <div class="video-card trending-item" style="display: none;" id="trendingVideoContainer3">
+            <div class="video-player-container">
+                <video id="trendingVideo3" src="https://github.com/ymallu73-ship-it/Video/raw/refs/heads/main/mom%20_%20Son%20HD8377321876489487830.mp4" preload="metadata" muted playsinline></video>
+            </div>
+            <div class="video-info-bar">
+                <span class="video-title-text">🔥 Trending Video #3 (Mom & Son)</span>
+                <div class="video-badges">
+                    <button class="custom-play-btn" data-video="trendingVideo3">▶ Play</button>
+                    <button class="custom-fs-btn" data-video="trendingVideo3">Full View</button>
+                    <span class="badge">HD</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Trending Video 4 -->
+        <div class="video-card trending-item" style="display: none;" id="trendingVideoContainer4">
+            <div class="video-player-container">
+                <video id="trendingVideo4" src="https://github.com/ymallu73-ship-it/Video/raw/refs/heads/main/c77fe4c547aace6b16010f57fe11dd3c_4803401399935302582877_2.mp4" preload="metadata" muted playsinline></video>
+            </div>
+            <div class="video-info-bar">
+                <span class="video-title-text">🔥 Trending Video #4</span>
+                <div class="video-badges">
+                    <button class="custom-play-btn" data-video="trendingVideo4">▶ Play</button>
+                    <button class="custom-fs-btn" data-video="trendingVideo4">Full View</button>
+                    <span class="badge">HD</span>
+                </div>
+            </div>
+        </div>
+        <!-- ================= END OF TRENDING VIDEOS ================= -->
+
+    </div>
+</div>
+
+<!-- CUSTOM STYLISH TOAST NOTIFICATION MODAL -->
+<div class="custom-toast-overlay" id="customToastOverlay">
+    <div class="custom-toast-box">
+        <div class="custom-toast-icon">🎉</div>
+        <h3 id="toastTitle">Congratulations</h3>
+        <p id="toastMessage">10-minute free VIP trial activated!</p>
+        <button class="custom-toast-btn" id="toastOkBtn">OK</button>
+    </div>
+</div>
+
+<!-- PREMIUM REQUIRED MODAL -->
+<div class="expired-modal-overlay" id="expiredModalOverlay">
+    <div class="expired-modal-box">
+        <div class="expired-icon-circle">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+            </svg>
+        </div>
+        <h2>VIP Access Required</h2>
+        <p id="modalDescText">यह पेज खोलने के लिए पहले 10 मिनट फ्री एक्सेस बटन पर क्लिक करें या VIP Membership लें।</p>
+        <div class="expired-btns-row">
+            <button class="expired-btn-later" id="expiredLaterBtn">Cancel</button>
+            <button class="expired-btn-renew" id="expiredRenewBtn">👑 Get Premium</button>
+        </div>
+    </div>
+</div>
+
+<!-- PREMIUM CODE INPUT MODAL -->
+<div class="code-modal-overlay" id="codeModalOverlay">
+    <div class="code-modal-box">
+        <div class="code-modal-icon-circle">🔑</div>
+        <h2>Enter VIP Code</h2>
+        <p>Unlock lifetime VIP access instantly by entering your secret code below.</p>
+        <input type="text" id="vipCodeInput" class="code-input-field" placeholder="Enter VIP Code..." autocomplete="off">
+        <div class="code-btns-row">
+            <button class="code-btn-cancel" id="codeCancelBtn">Cancel</button>
+            <button class="code-btn-submit" id="codeSubmitBtn">Unlock</button>
+        </div>
+    </div>
+</div>
+
+<!-- THEATER MODE -->
+<div class="custom-theater-overlay" id="theaterOverlay">
+    <div class="custom-theater-box">
+        <button class="theater-close-btn" id="theaterCloseBtn">&times;</button>
+        <div id="theaterVideoSlot"></div>
+    </div>
+</div>
+
+<!-- OVERLAY & SIDEBAR -->
+<div class="overlay" id="overlay"></div>
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <h2>Menu</h2>
+        <button class="close-btn" id="closeBtn">&times;</button>
+    </div>
+
+    <div class="sidebar-user-profile" id="sidebarUserProfile">
+        <img src="" id="sidebarUserAvatar" class="sidebar-user-avatar" alt="Avatar">
+        <div class="sidebar-user-info">
+            <span class="sidebar-user-name" id="sidebarUserName">User</span>
+            <span class="sidebar-user-status" id="sidebarUserStatus">Online / Member</span>
+        </div>
+    </div>
+
+    <div class="sidebar-links">
+        <a class="sidebar-link" id="menuHomeLink">
+            <img src="https://lh3.googleusercontent.com/d/1nW4xgA8V9kmLIrPI1N_A6xMhJsO6pdHp" class="sidebar-icon" alt="Home">
+            Home
+        </a>
+        <a class="sidebar-link" id="sidebarCodeBtn">
+            <img src="https://lh3.googleusercontent.com/d/1Q-DIL-1NyOhhBnZl2foeFA7kB9EVebxD" class="sidebar-icon" alt="Code">
+            Change Code
+        </a>
+        <a class="sidebar-link" id="sidebarPremiumLink">
+            <img src="https://lh3.googleusercontent.com/d/1Q-DIL-1NyOhhBnZl2foeFA7kB9EVebxD" class="sidebar-icon" alt="Prem">
+            Premium Membership
+        </a>
+        <a class="sidebar-link" id="themeToggleBtn">
+            <img src="https://lh3.googleusercontent.com/d/1YBgjM8tmNOhDYiBNRkbwl7ojEivZijQF" class="sidebar-icon" id="themeIcon" alt="Theme">
+            <span id="themeText">Dark Mode</span>
+        </a>
+        <a href="#" class="sidebar-link">
+            <img src="https://lh3.googleusercontent.com/d/1YBgjM8tmNOhDYiBNRkbwl7ojEijQF" class="sidebar-icon" alt="Settings">
+            Settings
+        </a>
+        <a class="sidebar-link" id="logoutSidebarLink" style="display: none; color: #ef4444; border-color: rgba(239, 68, 68, 0.3);">
+            <img src="https://lh3.googleusercontent.com/d/1Ni2_RR8LCgw6JCwU_raNQPUqD-nqq9ly" class="sidebar-icon" alt="Logout">
+            Logout
+        </a>
+    </div>
+</div>
 
 <script>
-    const canvas = document.getElementById('heartCanvas');
-    const ctx = canvas.getContext('2d');
-    const centerBox = document.getElementById('centerBox');
+    const firebaseConfig = {
+      apiKey: "AIzaSyDI7yuJx1COt5OeHx8L9TWwdLRXSj1MqZo",
+      authDomain: "playtime-f5bd9.firebaseapp.com",
+      databaseURL: "https://playtime-f5bd9-default-rtdb.firebaseio.com",
+      projectId: "playtime-f5bd9",
+      storageBucket: "playtime-f5bd9.firebasestorage.app",
+      messagingSenderId: "339670579331",
+      appId: "1:339670579331:web:19282129fd16887f1343b6",
+      measurementId: "G-VRDB9VYM7B"
+    };
 
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.database();
 
-    ctx.translate(canvas.width / 2, canvas.height / 2 + 30);
-    ctx.scale(1, -1);
+    // 18+ Age Verification Logic (Session-based: हर नए टैब/विंडो में एक बार पूछना अनिवार्य)
+    const ageVerifyOverlay = document.getElementById('ageVerifyOverlay');
+    const ageYesBtn = document.getElementById('ageYesBtn');
+    const ageNoBtn = document.getElementById('ageNoBtn');
 
-    const colors = ["red", "blue", "lime", "yellow", "cyan", "magenta", "orange", "pink"];
-    let i = 0;
-    let timer = null;
-
-    function startAnimation() {
-        centerBox.style.display = 'none';
-        
-        // Interval use kiya hai taaki mobile browser par animation 100% run ho
-        timer = setInterval(() => {
-            if (i < 120) {
-                let angle = i * (Math.PI * 2) / 120;
-                let scale = 11;
-                
-                let x = 16 * Math.pow(Math.sin(angle), 3) * scale;
-                let y = (13 * Math.cos(angle) - 5 * Math.cos(2 * angle) - 2 * Math.cos(3 * angle) - Math.cos(4 * angle)) * scale;
-                
-                let c = colors[Math.floor(Math.random() * colors.length)];
-                
-                ctx.beginPath();
-                ctx.moveTo(0, 40);
-                ctx.lineTo(x, y);
-                ctx.strokeStyle = c;
-                ctx.lineWidth = 1.5;
-                ctx.stroke();
-
-                // Star draw
-                ctx.save();
-                ctx.translate(x, y);
-                ctx.strokeStyle = c;
-                ctx.lineWidth = 1;
-                for (let j = 0; j < 8; j++) {
-                    ctx.beginPath();
-                    ctx.moveTo(0, 0);
-                    ctx.lineTo(5, 0);
-                    ctx.stroke();
-                    ctx.translate(5, 0);
-                    ctx.rotate(45 * Math.PI / 180);
-                    ctx.translate(-5, 0);
-                }
-                ctx.restore();
-
-                i++;
-            } else {
-                clearInterval(timer);
-            }
-        }, 35);
+    if (sessionStorage.getItem('age_verified_session') === 'true') {
+        if (ageVerifyOverlay) ageVerifyOverlay.classList.remove('active');
+    } else {
+        if (ageVerifyOverlay) ageVerifyOverlay.classList.add('active');
     }
+
+    if (ageYesBtn) {
+        ageYesBtn.addEventListener('click', () => {
+            sessionStorage.setItem('age_verified_session', 'true');
+            if (ageVerifyOverlay) ageVerifyOverlay.classList.remove('active');
+        });
+    }
+
+    if (ageNoBtn) {
+        ageNoBtn.addEventListener('click', () => {
+            window.location.href = "https://www.google.com";
+        });
+    }
+
+    const expiredModalOverlay = document.getElementById('expiredModalOverlay');
+    const expiredLaterBtn = document.getElementById('expiredLaterBtn');
+    const expiredRenewBtn = document.getElementById('expiredRenewBtn');
+    const modalDescText = document.getElementById('modalDescText');
+    
+    const customToastOverlay = document.getElementById('customToastOverlay');
+    const toastOkBtn = document.getElementById('toastOkBtn');
+
+    // Premium Code Modal Elements
+    const codeModalOverlay = document.getElementById('codeModalOverlay');
+    const vipCodeInput = document.getElementById('vipCodeInput');
+    const codeCancelBtn = document.getElementById('codeCancelBtn');
+    const codeSubmitBtn = document.getElementById('codeSubmitBtn');
+
+    const loginBtn = document.getElementById('loginBtn');
+    const vipBadgeTag = document.getElementById('vipBadgeTag');
+    
+    const sidebarUserProfile = document.getElementById('sidebarUserProfile');
+    const sidebarUserAvatar = document.getElementById('sidebarUserAvatar');
+    const sidebarUserName = document.getElementById('sidebarUserName');
+    const sidebarUserStatus = document.getElementById('sidebarUserStatus');
+    const logoutSidebarLink = document.getElementById('logoutSidebarLink');
+
+    const freeTrialBtn = document.getElementById('freeTrialBtn');
+    const topButtonsRow = document.getElementById('topButtonsRow');
+    const sidebarCodeBtn = document.getElementById('sidebarCodeBtn');
+
+    let isPermanentVip = localStorage.getItem('unlocked_vip_code') === 'true'; 
+
+    function applyVipUiChanges() {
+        if (isPermanentVip) {
+            if (vipBadgeTag) vipBadgeTag.style.display = 'inline-block';
+            if (sidebarUserStatus) sidebarUserStatus.innerText = "👑 Exclusive VIP Member";
+            if (sidebarUserProfile) sidebarUserProfile.classList.add('vip-profile-card');
+            if (topButtonsRow) topButtonsRow.style.display = 'none'; 
+            document.querySelectorAll('.lock-badge').forEach(badge => badge.style.display = 'none');
+        }
+    }
+
+    if (sidebarCodeBtn) {
+        sidebarCodeBtn.addEventListener('click', () => {
+            sidebar.classList.remove('active');
+            overlay.classList.remove('active');
+            vipCodeInput.value = '';
+            codeModalOverlay.classList.add('active');
+            setTimeout(() => vipCodeInput.focus(), 100);
+        });
+    }
+
+    if (codeCancelBtn) {
+        codeCancelBtn.addEventListener('click', () => {
+            codeModalOverlay.classList.remove('active');
+        });
+    }
+
+    if (codeSubmitBtn) {
+        codeSubmitBtn.addEventListener('click', () => {
+            let enteredCode = vipCodeInput.value.trim();
+            if (enteredCode === "K2JNFF17") {
+                localStorage.setItem('unlocked_vip_code', 'true');
+                isPermanentVip = true;
+                applyVipUiChanges();
+                codeModalOverlay.classList.remove('active');
+                alert("Success! VIP Access Unlocked Successfully.");
+            } else if (enteredCode !== "") {
+                alert("Invalid Code! Please try again.");
+                vipCodeInput.focus();
+            }
+        });
+    }
+
+    if (vipCodeInput) {
+        vipCodeInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                codeSubmitBtn.click();
+            }
+        });
+    }
+
+    if (codeModalOverlay) {
+        codeModalOverlay.addEventListener('click', (e) => {
+            if (e.target === codeModalOverlay) {
+                codeModalOverlay.classList.remove('active');
+            }
+        });
+    }
+
+    function checkFirebaseVipStatus(user, callback) {
+        if (isPermanentVip) {
+            callback(true);
+            return;
+        }
+        if (!user || !user.email) {
+            callback(false);
+            return;
+        }
+
+        let safeEmailKey = user.email.toLowerCase().trim().replace(/[@\.]/g, '_');
+
+        db.ref('vip_users/' + safeEmailKey).once('value')
+            .then((snapshot) => {
+                const data = snapshot.val();
+                if (data && data.isVip === true) {
+                    callback(true);
+                } else {
+                    callback(false);
+                }
+            })
+            .catch((error) => {
+                console.error("Database check error:", error);
+                callback(false);
+            });
+    }
+
+    function updateTrialButtonState() {
+        if (isPermanentVip || !freeTrialBtn) return;
+        const trialEndTime = localStorage.getItem('trialEndTime');
+        const nextAllowedClickTime = localStorage.getItem('nextAllowedClickTime');
+        const now = new Date().getTime();
+
+        if (trialEndTime && now < parseInt(trialEndTime)) {
+            const diff = parseInt(trialEndTime) - now;
+            const minutes = Math.floor(diff / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+            
+            freeTrialBtn.classList.add('clicked-color');
+            freeTrialBtn.querySelector('span').innerText = `🎁 Active: ${minutes}m ${seconds}s`;
+            setTimeout(updateTrialButtonState, 1000);
+        } else if (nextAllowedClickTime && now < parseInt(nextAllowedClickTime)) {
+            const diff = parseInt(nextAllowedClickTime) - now;
+            const hours = Math.floor(diff / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+            
+            freeTrialBtn.classList.add('clicked-color');
+            freeTrialBtn.querySelector('span').innerText = `⏳ Wait ${hours}h ${minutes}m ${seconds}s`;
+            setTimeout(updateTrialButtonState, 1000);
+        } else {
+            freeTrialBtn.classList.remove('clicked-color');
+            freeTrialBtn.querySelector('span').innerText = `🎁 Free 10-Min VIP`;
+        }
+    }
+
+    function startFreeTrial() {
+        const now = new Date().getTime();
+        const nextAllowedClickTime = localStorage.getItem('nextAllowedClickTime');
+
+        if (nextAllowedClickTime && now < parseInt(nextAllowedClickTime)) {
+            alert("आप अभी दोबारा फ्री एक्सेस नहीं ले सकते। कृपया 3 घंटे पूरे होने का इंतज़ार करें!");
+            return;
+        }
+
+        const trialEndTime = now + (10 * 60 * 1000); 
+        const newNextAllowedTime = now + (3 * 60 * 60 * 1000); 
+
+        localStorage.setItem('trialEndTime', trialEndTime);
+        localStorage.setItem('nextAllowedClickTime', newNextAllowedTime);
+        
+        if(freeTrialBtn) freeTrialBtn.classList.add('clicked-color');
+        if(customToastOverlay) customToastOverlay.classList.add('active');
+        updateTrialButtonState();
+    }
+
+    if(toastOkBtn) {
+        toastOkBtn.addEventListener('click', () => {
+            if(customToastOverlay) customToastOverlay.classList.remove('active');
+        });
+    }
+
+    if(freeTrialBtn) {
+        freeTrialBtn.addEventListener('click', () => {
+            startFreeTrial();
+        });
+    }
+
+    updateTrialButtonState();
+    applyVipUiChanges();
+
+    auth.onAuthStateChanged((user) => {
+        if (user) {
+            const userEmail = user.email ? user.email.toLowerCase().trim() : "";
+            const userName = user.displayName ? user.displayName : (userEmail ? userEmail.split('@')[0] : "User");
+            const userPhoto = user.photoURL ? user.photoURL : "https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg";
+
+            if (loginBtn) loginBtn.style.display = 'none';
+            if (logoutSidebarLink) logoutSidebarLink.style.display = 'flex';
+            if (sidebarUserProfile) sidebarUserProfile.style.display = 'flex';
+            if (sidebarUserAvatar) sidebarUserAvatar.src = userPhoto;
+            if (sidebarUserName) sidebarUserName.innerText = userName;
+
+            checkFirebaseVipStatus(user, (dbVipStatus) => {
+                if (dbVipStatus || isPermanentVip) {
+                    isPermanentVip = true;
+                    applyVipUiChanges();
+                } else {
+                    if (!isPermanentVip) {
+                        if (sidebarUserStatus) sidebarUserStatus.innerText = "Free Member";
+                        if (sidebarUserProfile) sidebarUserProfile.classList.remove('vip-profile-card');
+                        if (vipBadgeTag) vipBadgeTag.style.display = 'none';
+                    }
+                }
+            });
+
+        } else {
+            if (!isPermanentVip) {
+                if (loginBtn) loginBtn.style.display = 'flex';
+                if (sidebarUserProfile) sidebarUserProfile.style.display = 'none';
+                if (logoutSidebarLink) sidebarUserProfile.style.display = 'none';
+                if (navPremiumBtn) navPremiumBtn.style.display = 'flex';
+            }
+        }
+    });
+
+    if(loginBtn) {
+        loginBtn.addEventListener('click', () => {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            auth.signInWithPopup(provider)
+                .catch((error) => {
+                    console.error("Login Error:", error);
+                    alert("Login failed: " + error.message);
+                });
+        });
+    }
+
+    if(logoutSidebarLink) {
+        logoutSidebarLink.addEventListener('click', () => {
+            auth.signOut().then(() => {
+                alert("Logged out successfully!");
+                location.reload();
+            });
+        });
+    }
+
+    if(expiredLaterBtn) {
+        expiredLaterBtn.addEventListener('click', () => {
+            if(expiredModalOverlay) expiredModalOverlay.classList.remove('active');
+        });
+    }
+
+    if(expiredRenewBtn) {
+        expiredRenewBtn.addEventListener('click', () => {
+            if(expiredModalOverlay) expiredModalOverlay.classList.remove('active');
+            showView(premiumView);
+        });
+    }
+
+    const menuBtn = document.getElementById('menuBtn');
+    const sidebar = document.getElementById('sidebar');
+    const closeBtn = document.getElementById('closeBtn');
+    const overlay = document.getElementById('overlay');
+
+    const homeView = document.getElementById('homeView');
+    const instaView = document.getElementById('instaView');
+    const premiumView = document.getElementById('premiumView');
+    const girlsView = document.getElementById('girlsView');
+    const categoryView = document.getElementById('categoryView');
+
+    const instaBtn = document.getElementById('instaBtn');
+    const japBtn = document.getElementById('japBtn');
+    const usBtn = document.getElementById('usBtn');
+    const desiBtn = document.getElementById('desiBtn');
+    const girlsBtn = document.getElementById('girlsBtn');
+
+    const navPremiumBtn = document.getElementById('navPremiumBtn');
+    const sidebarPremiumLink = document.getElementById('sidebarPremiumLink');
+
+    const backBtn = document.getElementById('backBtn');
+    const girlsBackBtn = document.getElementById('girlsBackBtn');
+    const premiumBackBtn = document.getElementById('premiumBackBtn');
+    const categoryBackBtn = document.getElementById('categoryBackBtn');
+    const menuHomeLink = document.getElementById('menuHomeLink');
+
+    const themeToggleBtn = document.getElementById('themeToggleBtn');
+    const themeText = document.getElementById('themeText');
+    const htmlElement = document.documentElement;
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    if (savedTheme === 'dark') {
+        htmlElement.setAttribute('data-theme', 'dark');
+        if(themeText) themeText.innerText = 'Light Mode';
+    } else {
+        htmlElement.removeAttribute('data-theme');
+        if(themeText) themeText.innerText = 'Dark Mode';
+    }
+
+    if(themeToggleBtn) {
+        themeToggleBtn.addEventListener('click', () => {
+            if (htmlElement.getAttribute('data-theme') === 'dark') {
+                htmlElement.removeAttribute('data-theme');
+                localStorage.setItem('theme', 'light');
+                if(themeText) themeText.innerText = 'Dark Mode';
+            } else {
+                htmlElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+                if(themeText) themeText.innerText = 'Light Mode';
+            }
+        });
+    }
+
+    const allVideos = document.querySelectorAll('video');
+    const theaterOverlay = document.getElementById('theaterOverlay');
+    const theaterCloseBtn = document.getElementById('theaterCloseBtn');
+    const theaterVideoSlot = document.getElementById('theaterVideoSlot');
+    const customFsBtns = document.querySelectorAll('.custom-fs-btn');
+    const customPlayBtns = document.querySelectorAll('.custom-play-btn');
+
+    let activeVideoElement = null;
+    let originalParentContainer = null;
+
+    allVideos.forEach(video => {
+        video.addEventListener('loadedmetadata', () => {
+            video.currentTime = 0.5;
+        });
+    });
+
+    function stopAllVideos() {
+        allVideos.forEach(video => {
+            video.pause();
+            video.currentTime = 0.5;
+        });
+    }
+
+    if(menuBtn) {
+        menuBtn.addEventListener('click', () => {
+            if(sidebar) sidebar.classList.add('active');
+            if(overlay) overlay.classList.add('active');
+        });
+    }
+
+    if(closeBtn) {
+        closeBtn.addEventListener('click', () => {
+            if(sidebar) sidebar.classList.remove('active');
+            if(overlay) overlay.classList.remove('active');
+        });
+    }
+
+    if(overlay) {
+        overlay.addEventListener('click', () => {
+            if(sidebar) sidebar.classList.remove('active');
+            if(overlay) overlay.classList.remove('active');
+        });
+    }
+
+    function showView(viewToShow) {
+        closeTheaterMode();
+        stopAllVideos();
+        if(homeView) homeView.classList.remove('active');
+        if(instaView) instaView.classList.remove('active');
+        if(girlsView) girlsView.classList.remove('active');
+        if(premiumView) premiumView.classList.remove('active');
+        if(categoryView) categoryView.classList.remove('active');
+        if(viewToShow) viewToShow.classList.add('active');
+        window.scrollTo(0, 0);
+        if(sidebar) sidebar.classList.remove('active');
+        if(overlay) overlay.classList.remove('active');
+    }
+
+    function hasActiveAccess() {
+        if (isPermanentVip) return true;
+        const trialEndTime = localStorage.getItem('trialEndTime');
+        const now = new Date().getTime();
+        return (trialEndTime && now < parseInt(trialEndTime));
+    }
+
+    function handlePermanentVipClick(targetView) {
+        if (!hasActiveAccess()) {
+            if(modalDescText) modalDescText.innerText = "यह पेज खोलने के लिए पहले 10 मिनट फ्री एक्सेस बटन पर क्लिक करें या VIP Membership लें।";
+            if(expiredModalOverlay) expiredModalOverlay.classList.add('active');
+            return;
+        }
+        showView(targetView);
+    }
+
+    if(instaBtn) instaBtn.addEventListener('click', () => handlePermanentVipClick(instaView));
+    if(girlsBtn) girlsBtn.addEventListener('click', () => handlePermanentVipClick(girlsView));
+    if(japBtn) japBtn.addEventListener('click', () => handlePermanentVipClick(instaView));
+    if(usBtn) usBtn.addEventListener('click', () => handlePermanentVipClick(instaView));
+    if(desiBtn) desiBtn.addEventListener('click', () => handlePermanentVipClick(instaView));
+
+    if(navPremiumBtn) navPremiumBtn.addEventListener('click', () => showView(premiumView));
+    if(sidebarPremiumLink) sidebarPremiumLink.addEventListener('click', () => showView(premiumView));
+
+    if(backBtn) backBtn.addEventListener('click', () => showView(homeView));
+    if(girlsBackBtn) girlsBackBtn.addEventListener('click', () => showView(homeView));
+    if(premiumBackBtn) premiumBackBtn.addEventListener('click', () => showView(homeView));
+    if(categoryBackBtn) categoryBackBtn.addEventListener('click', () => showView(homeView));
+    if(menuHomeLink) menuHomeLink.addEventListener('click', () => showView(homeView));
+
+    function processPayment(planName) {
+        alert("Redirecting to payment gateway for " + planName + "...");
+    }
+
+    function filterCategory(categoryName, clickedButton) {
+        if (!hasActiveAccess()) {
+            if(modalDescText) modalDescText.innerText = "इन बटनों को खोलने के लिए पहले 10 मिनट फ्री एक्सेस लें या VIP Membership लें।";
+            if(expiredModalOverlay) expiredModalOverlay.classList.add('active');
+            return;
+        }
+
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.classList.remove('clicked-color');
+        });
+        if(clickedButton) clickedButton.classList.add('clicked-color');
+
+        let titleText = "Category Content";
+        let forYouItems = document.querySelectorAll('.for-you-item');
+        let trendingItems = document.querySelectorAll('.trending-item');
+
+        if (categoryName === 'forYou') {
+            titleText = "🔥 For You Content";
+            forYouItems.forEach(el => el.style.display = 'block');
+            trendingItems.forEach(el => el.style.display = 'none');
+        } else if (categoryName === 'trending') {
+            titleText = "🔥 Trending Content";
+            forYouItems.forEach(el => el.style.display = 'none');
+            trendingItems.forEach(el => el.style.display = 'block');
+        }
+
+        const catTitleElem = document.getElementById('categoryPageTitle');
+        if(catTitleElem) catTitleElem.innerText = titleText;
+        
+        const catContentTitle = document.getElementById('categoryContentTitle');
+        if(catContentTitle) {
+            catContentTitle.innerText = titleText;
+        }
+
+        showView(categoryView);
+    }
+
+    function handleVideoPlayAttempt(targetId, e) {
+        e.stopPropagation();
+
+        if (!hasActiveAccess()) {
+            if(modalDescText) modalDescText.innerText = "वीडियो देखने के लिए पहले 10 मिनट फ्री एक्सेस लें या VIP Membership लें।";
+            if(expiredModalOverlay) expiredModalOverlay.classList.add('active');
+            return;
+        }
+        
+        stopAllVideos();
+        activeVideoElement = document.getElementById(targetId);
+        if(!activeVideoElement) return;
+        
+        originalParentContainer = activeVideoElement.parentElement;
+
+        if(theaterVideoSlot) theaterVideoSlot.appendChild(activeVideoElement);
+        activeVideoElement.setAttribute('controls', 'true');
+        if(theaterOverlay) theaterOverlay.classList.add('active');
+        activeVideoElement.currentTime = 0;
+        activeVideoElement.play();
+    }
+
+    customPlayBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => handleVideoPlayAttempt(btn.getAttribute('data-video'), e));
+    });
+
+    customFsBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => handleVideoPlayAttempt(btn.getAttribute('data-video'), e));
+    });
+
+    function closeTheaterMode() {
+        if (activeVideoElement && originalParentContainer) {
+            activeVideoElement.pause();
+            activeVideoElement.removeAttribute('controls');
+            originalParentContainer.appendChild(activeVideoElement);
+            if(theaterOverlay) theaterOverlay.classList.remove('active');
+            activeVideoElement.currentTime = 0.5;
+            activeVideoElement = null;
+            originalParentContainer = null;
+        }
+    }
+
+    if(theaterCloseBtn) {
+        theaterCloseBtn.addEventListener('click', closeTheaterMode);
+    }
+    
+    if(theaterOverlay) {
+        theaterOverlay.addEventListener('click', (e) => {
+            if (e.target === theaterOverlay) closeTheaterMode();
+        });
+    }
+
 </script>
 
 </body>
