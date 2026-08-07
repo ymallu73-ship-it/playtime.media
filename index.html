@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,14 +10,6 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-
-<!-- Vercel Web Analytics -->
-<script>
-  window.va = window.va || function () { 
-    (window.vaq = window.vaq || []).push(arguments); 
-  };
-</script>
-<script defer src="/_vercel/insights/script.js"></script>
 
 <style>
 /* --- Light Mode Colors (Default) --- */
@@ -66,6 +59,25 @@ body{
     overflow-x:hidden;
     min-height: 100vh;
     transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* --- Video View Counter Badge CSS --- */
+.video-view-counter {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: rgba(0, 0, 0, 0.75);
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 8px;
+    z-index: 20;
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    pointer-events: none;
 }
 
 /* --- 18+ Age Verification Modal Styles --- */
@@ -1324,7 +1336,6 @@ body{
             </button>
         </div>
 
-        <!-- Free Section Banner Wrapper -->
         <div class="free-section-wrapper">
             <div class="free-section-title">🔥 FREE CONTENT 🔥</div>
             <div class="button-row" style="margin-bottom: 0;">
@@ -1425,6 +1436,7 @@ body{
 
         <div class="video-card">
             <div class="video-player-container">
+                <div class="video-view-counter" id="views-reelVideo1">0 Views</div>
                 <video id="reelVideo1" src="http://hc1.checker.in/file2link/videos/file_576239.mp4/" preload="metadata" muted playsinline></video>
             </div>
             <div class="video-info-bar">
@@ -1439,6 +1451,7 @@ body{
 
         <div class="video-card">
             <div class="video-player-container">
+                <div class="video-view-counter" id="views-reelVideo2">0 Views</div>
                 <video id="reelVideo2" src="http://hc1.checker.in/file2link/videos/file_576255.mp4/" preload="metadata" muted playsinline></video>
             </div>
             <div class="video-info-bar">
@@ -1467,6 +1480,7 @@ body{
 
         <div class="video-card">
             <div class="video-player-container">
+                <div class="video-view-counter" id="views-girlVideo1">0 Views</div>
                 <video id="girlVideo1" src="http://hc1.checker.in/file2link/videos/file_576389.mp4/" preload="metadata" muted playsinline></video>
             </div>
             <div class="video-info-bar">
@@ -1493,6 +1507,7 @@ body{
         
         <div class="video-card for-you-item" id="forYouVideoContainer">
             <div class="video-player-container">
+                <div class="video-view-counter" id="views-githubForYouVideo">0 Views</div>
                 <video id="githubForYouVideo" src="https://github.com/ymallu73-ship-it/playtime.media/raw/refs/heads/main/VID-20231023-WA0180(1).mp4" preload="metadata" muted playsinline></video>
             </div>
             <div class="video-info-bar">
@@ -1507,6 +1522,7 @@ body{
 
         <div class="video-card for-you-item" id="forYouVideoContainer2">
             <div class="video-player-container">
+                <div class="video-view-counter" id="views-archiveForYouVideo2">0 Views</div>
                 <video id="archiveForYouVideo2" src="https://archive.org/download/mojo-1560/Mojo1560.mp4" preload="metadata" muted playsinline></video>
             </div>
             <div class="video-info-bar">
@@ -1519,10 +1535,11 @@ body{
             </div>
         </div>
 
-        <!-- TRENDING VIDEOS -->
+        <!-- Trending Video 1 -->
         <div class="video-card trending-item" style="display: none;" id="trendingVideoContainer1">
             <div class="video-player-container">
-                <video id="trendingVideo1" src="https://github.com/ymallu73-ship-it/Video/raw/refs/heads/main/1Zup60ITJswiYSi9(TG-Bhat%20kanda%20official)(1).mp4" preload="metadata" muted playsinline></video>
+                <div class="video-view-counter" id="views-trendingVideo1">0 Views</div>
+                <video id="trendingVideo1" src="https://github.com/ymallu73-ship-it/Video/raw/refs/heads/main/1Zup60ITJswiYSi9(TG-Bhat kanda official)(1).mp4" preload="metadata" muted playsinline></video>
             </div>
             <div class="video-info-bar">
                 <span class="video-title-text">🔥 Trending Video #1 (Bhat Kanda)</span>
@@ -1534,9 +1551,11 @@ body{
             </div>
         </div>
 
+        <!-- Trending Video 2 -->
         <div class="video-card trending-item" style="display: none;" id="trendingVideoContainer2">
             <div class="video-player-container">
-                <video id="trendingVideo2" src="https://github.com/ymallu73-ship-it/Video/raw/refs/heads/main/INDIAN%20SMALL%20BOYS%20WITH%20YOUNG%20SISTERS%20120%20VIDEOS.mp4" preload="metadata" muted playsinline></video>
+                <div class="video-view-counter" id="views-trendingVideo2">0 Views</div>
+                <video id="trendingVideo2" src="https://github.com/ymallu73-ship-it/Video/raw/refs/heads/main/INDIAN SMALL BOYS WITH YOUNG SISTERS 120 VIDEOS.mp4" preload="metadata" muted playsinline></video>
             </div>
             <div class="video-info-bar">
                 <span class="video-title-text">🔥 Trending Video #2</span>
@@ -1548,9 +1567,11 @@ body{
             </div>
         </div>
 
+        <!-- Trending Video 3 -->
         <div class="video-card trending-item" style="display: none;" id="trendingVideoContainer3">
             <div class="video-player-container">
-                <video id="trendingVideo3" src="https://github.com/ymallu73-ship-it/Video/raw/refs/heads/main/mom%20_%20Son%20HD8377321876489487830.mp4" preload="metadata" muted playsinline></video>
+                <div class="video-view-counter" id="views-trendingVideo3">0 Views</div>
+                <video id="trendingVideo3" src="https://github.com/ymallu73-ship-it/Video/raw/refs/heads/main/mom _ Son HD8377321876489487830.mp4" preload="metadata" muted playsinline></video>
             </div>
             <div class="video-info-bar">
                 <span class="video-title-text">🔥 Trending Video #3 (Mom & Son)</span>
@@ -1562,8 +1583,10 @@ body{
             </div>
         </div>
 
+        <!-- Trending Video 4 -->
         <div class="video-card trending-item" style="display: none;" id="trendingVideoContainer4">
             <div class="video-player-container">
+                <div class="video-view-counter" id="views-trendingVideo4">0 Views</div>
                 <video id="trendingVideo4" src="https://github.com/ymallu73-ship-it/Video/raw/refs/heads/main/c77fe4c547aace6b16010f57fe11dd3c_4803401399935302582877_2.mp4" preload="metadata" muted playsinline></video>
             </div>
             <div class="video-info-bar">
@@ -1579,7 +1602,7 @@ body{
     </div>
 </div>
 
-<!-- TOAST NOTIFICATION -->
+<!-- TOAST & MODALS -->
 <div class="custom-toast-overlay" id="customToastOverlay">
     <div class="custom-toast-box">
         <div class="custom-toast-icon">🎉</div>
@@ -1589,7 +1612,6 @@ body{
     </div>
 </div>
 
-<!-- PREMIUM REQUIRED MODAL -->
 <div class="expired-modal-overlay" id="expiredModalOverlay">
     <div class="expired-modal-box">
         <div class="expired-icon-circle">
@@ -1598,7 +1620,7 @@ body{
             </svg>
         </div>
         <h2>VIP Access Required</h2>
-        <p id="modalDescText">यह पेज खोलने के लिए VIP Membership लें।</p>
+        <p id="modalDescText">यह पेज खोलने के लिए पहले 10 मिनट फ्री एक्सेस बटन पर क्लिक करें या VIP Membership लें।</p>
         <div class="expired-btns-row">
             <button class="expired-btn-later" id="expiredLaterBtn">Cancel</button>
             <button class="expired-btn-renew" id="expiredRenewBtn">👑 Get Premium</button>
@@ -1606,7 +1628,6 @@ body{
     </div>
 </div>
 
-<!-- PREMIUM CODE INPUT MODAL -->
 <div class="code-modal-overlay" id="codeModalOverlay">
     <div class="code-modal-box">
         <div class="code-modal-icon-circle">🔑</div>
@@ -1620,7 +1641,6 @@ body{
     </div>
 </div>
 
-<!-- THEATER MODE -->
 <div class="custom-theater-overlay" id="theaterOverlay">
     <div class="custom-theater-box">
         <button class="theater-close-btn" id="theaterCloseBtn">&times;</button>
@@ -1628,7 +1648,6 @@ body{
     </div>
 </div>
 
-<!-- OVERLAY & SIDEBAR -->
 <div class="overlay" id="overlay"></div>
 <div class="sidebar" id="sidebar">
     <div class="sidebar-header">
@@ -2019,7 +2038,45 @@ body{
     let activeVideoElement = null;
     let originalParentContainer = null;
 
+    // --- VIEW COUNTER JAVASCRIPT LOGIC ---
+    // हर वीडियो के लिए व्यू काउंट इनिशियलाइज करें और प्ले होने पर काउंट बढ़ाएं
     allVideos.forEach(video => {
+        let videoId = video.id;
+        let viewCounterEl = document.getElementById('views-' + videoId);
+
+        // लोड होने पर पहले से सेव व्यूज़ दिखाएं
+        if (videoId) {
+            let savedViews = localStorage.getItem('view_count_' + videoId) || 0;
+            if (viewCounterEl) {
+                viewCounterEl.innerText = savedViews + (savedViews == 1 ? ' View' : ' Views');
+            }
+        }
+
+        // जैसे ही वीडियो प्ले होना शुरू हो (1-2 सेकंड चलने पर)
+        let counted = false;
+        video.addEventListener('timeupdate', () => {
+            if (video.currentTime >= 1 && !counted && videoId) {
+                counted = true;
+                let currentViews = parseInt(localStorage.getItem('view_count_' + videoId) || 0) + 1;
+                localStorage.setItem('view_count_' + videoId, currentViews);
+                
+                if (viewCounterEl) {
+                    viewCounterEl.innerText = currentViews + (currentViews == 1 ? ' View' : ' Views');
+                }
+            }
+        });
+
+        // वीडियो बंद होने पर काउंटेड फ्लैग रिसेट करें ताकि दोबारा प्ले करने पर फिर काउंट हो सके
+        video.addEventListener('pause', () => {
+            if (video.currentTime < 1) {
+                counted = false;
+            }
+        });
+
+        video.addEventListener('ended', () => {
+            counted = false;
+        });
+
         video.addEventListener('loadedmetadata', () => {
             video.currentTime = 0.5;
         });
@@ -2074,22 +2131,20 @@ body{
         return (trialEndTime && now < parseInt(trialEndTime));
     }
 
-    // --- UPDATED: लॉक वाले बटन्स के लिए सिर्फ परमानेंट VIP चेक ---
-    function handleLockedVipClick(targetView) {
-        if (!isPermanentVip) {
-            if(modalDescText) modalDescText.innerText = "यह प्रीमियम सेक्शन है! इसे खोलने के लिए केवल VIP Membership (या कोड) की आवश्यकता है।";
+    function handlePermanentVipClick(targetView) {
+        if (!hasActiveAccess()) {
+            if(modalDescText) modalDescText.innerText = "यह पेज खोलने के लिए पहले 10 मिनट फ्री एक्सेस बटन पर क्लिक करें या VIP Membership लें।";
             if(expiredModalOverlay) expiredModalOverlay.classList.add('active');
             return;
         }
         showView(targetView);
     }
 
-    // अब लॉक वाले सभी बटन सिर्फ परमानेंट VIP/प्रीमियम यूजर के लिए चलेंगे
-    if(instaBtn) instaBtn.addEventListener('click', () => handleLockedVipClick(instaView));
-    if(girlsBtn) girlsBtn.addEventListener('click', () => handleLockedVipClick(girlsView));
-    if(japBtn) japBtn.addEventListener('click', () => handleLockedVipClick(instaView));
-    if(usBtn) usBtn.addEventListener('click', () => handleLockedVipClick(instaView));
-    if(desiBtn) desiBtn.addEventListener('click', () => handleLockedVipClick(instaView));
+    if(instaBtn) instaBtn.addEventListener('click', () => handlePermanentVipClick(instaView));
+    if(girlsBtn) girlsBtn.addEventListener('click', () => handlePermanentVipClick(girlsView));
+    if(japBtn) japBtn.addEventListener('click', () => handlePermanentVipClick(instaView));
+    if(usBtn) usBtn.addEventListener('click', () => handlePermanentVipClick(instaView));
+    if(desiBtn) desiBtn.addEventListener('click', () => handlePermanentVipClick(instaView));
 
     if(navPremiumBtn) navPremiumBtn.addEventListener('click', () => showView(premiumView));
     if(sidebarPremiumLink) sidebarPremiumLink.addEventListener('click', () => showView(premiumView));
