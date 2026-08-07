@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -61,7 +60,7 @@ body{
     transition: background 0.3s ease, color 0.3s ease;
 }
 
-/* --- Video View Counter Badge CSS --- */
+/* --- Global Video View Counter Badge CSS --- */
 .video-view-counter {
     position: absolute;
     top: 10px;
@@ -1681,7 +1680,7 @@ body{
             <span id="themeText">Dark Mode</span>
         </a>
         <a href="#" class="sidebar-link">
-            <img src="https://lh3.googleusercontent.com/d/1YBgjM8tmNOhDYiBNRkbwl7ojEijQF" class="sidebar-icon" alt="Settings">
+            <img src="https://lh3.googleusercontent.com/d/1YBgjM8tmNOhDYiBNRjkwl7ojEijQF" class="sidebar-icon" alt="Settings">
             Settings
         </a>
         <a class="sidebar-link" id="logoutSidebarLink" style="display: none; color: #ef4444; border-color: rgba(239, 68, 68, 0.3);">
@@ -2038,35 +2037,36 @@ body{
     let activeVideoElement = null;
     let originalParentContainer = null;
 
-    // --- VIEW COUNTER JAVASCRIPT LOGIC ---
-    // हर वीडियो के लिए व्यू काउंट इनिशियलाइज करें और प्ले होने पर काउंट बढ़ाएं
+    // --- FIREBASE GLOBAL VIEW COUNTER LOGIC ---
     allVideos.forEach(video => {
         let videoId = video.id;
         let viewCounterEl = document.getElementById('views-' + videoId);
 
-        // लोड होने पर पहले से सेव व्यूज़ दिखाएं
         if (videoId) {
-            let savedViews = localStorage.getItem('view_count_' + videoId) || 0;
-            if (viewCounterEl) {
-                viewCounterEl.innerText = savedViews + (savedViews == 1 ? ' View' : ' Views');
-            }
+            // डेटाबेस से लाइव व्यूज़ सिंक करें (ताकि सभी विजिटर्स को सही डेटा दिखे)
+            db.ref('video_views/' + videoId).on('value', (snapshot) => {
+                let views = snapshot.val() || 0;
+                if (viewCounterEl) {
+                    viewCounterEl.innerText = views + (views === 1 ? ' View' : ' Views');
+                }
+            });
         }
 
-        // जैसे ही वीडियो प्ले होना शुरू हो (1-2 सेकंड चलने पर)
         let counted = false;
+        // वीडियो 1-2 सेकंड चलने पर ग्लोबल व्यू काउंट बढ़ाएं
         video.addEventListener('timeupdate', () => {
-            if (video.currentTime >= 1 && !counted && videoId) {
+            if (video.currentTime >= 1.5 && !counted && videoId) {
                 counted = true;
-                let currentViews = parseInt(localStorage.getItem('view_count_' + videoId) || 0) + 1;
-                localStorage.setItem('view_count_' + videoId, currentViews);
                 
-                if (viewCounterEl) {
-                    viewCounterEl.innerText = currentViews + (currentViews == 1 ? ' View' : ' Views');
-                }
+                // Firebase डेटाबेस में व्यू की संख्या सुरक्षित रूप से बढ़ाएं
+                let viewRef = db.ref('video_views/' + videoId);
+                viewRef.transaction((currentViews) => {
+                    return (currentViews || 0) + 1;
+                });
             }
         });
 
-        // वीडियो बंद होने पर काउंटेड फ्लैग रिसेट करें ताकि दोबारा प्ले करने पर फिर काउंट हो सके
+        // वीडियो दोबारा प्ले होने के लिए फ्लैग रीसेट करें
         video.addEventListener('pause', () => {
             if (video.currentTime < 1) {
                 counted = false;
