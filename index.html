@@ -1,590 +1,461 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Yummi's Official Funny World 👑</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Canvas Confetti Library -->
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
-    
-    <style>
-        body {
-            font-family: 'Nunito', sans-serif;
-            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #a1c4fd 100%);
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-        .font-fredoka {
-            font-family: 'Fredoka One', cursive;
-        }
-        
-        /* Floating Emoji Animation */
-        .floating-emoji {
-            position: fixed;
-            user-select: none;
-            pointer-events: none;
-            animation: floatUp 6s linear infinite;
-            z-index: 10;
-        }
-        @keyframes floatUp {
-            0% { transform: translateY(100vh) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Will You Go On A Date With Me?</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Poppins:wght@300;400;500;600&display=swap');
 
-        /* Pulsing & Wiggle animations */
-        .wiggle {
-            animation: wiggle 0.5s ease-in-out infinite alternate;
-        }
-        @keyframes wiggle {
-            0% { transform: rotate(-3deg); }
-            100% { transform: rotate(3deg); }
-        }
+    :root {
+      --bg-pink: #f7e8eb;
+      --card-bg: #f2eee9;
+      --text-maroon: #681d32;
+      --subtext-gray: #6e675f;
+      --btn-pink: #e6739f;
+      --btn-pink-hover: #d65c8a;
+      --btn-purple: #9b8ac4;
+      --border-pink: #e3aabf;
+    }
 
-        .glass-card {
-            background: rgba(255, 255, 255, 0.75);
-            backdrop-filter: blur(10px);
-            border: 2px solid rgba(255, 255, 255, 0.8);
-        }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 10px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #fecfef;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #ff6b81;
-            border-radius: 5px;
-        }
-    </style>
+    body {
+      background-color: var(--bg-pink);
+      font-family: 'Poppins', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow-x: hidden;
+      padding: 20px;
+    }
+
+    .card-container {
+      background-color: var(--card-bg);
+      width: 100%;
+      max-width: 420px;
+      padding: 40px 25px;
+      border-radius: 28px;
+      box-shadow: 0 10px 30px rgba(104, 29, 50, 0.08);
+      text-align: center;
+      position: relative;
+      min-height: 500px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Typography */
+    h1, h2 {
+      font-family: 'Playfair Display', serif;
+      color: var(--text-maroon);
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      line-height: 1.3;
+    }
+
+    p.subtext {
+      color: var(--subtext-gray);
+      font-size: 13px;
+      font-style: italic;
+      margin-bottom: 24px;
+    }
+
+    .media-box {
+      width: 130px;
+      height: 130px;
+      border-radius: 20px;
+      overflow: hidden;
+      margin-bottom: 24px;
+      background-color: #ddd;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    }
+
+    .media-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Buttons Layout */
+    .btn-group {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 15px;
+      width: 100%;
+      margin-top: 15px;
+      min-height: 60px;
+    }
+
+    .btn-main {
+      background-color: var(--btn-pink);
+      color: white;
+      border: none;
+      padding: 12px 28px;
+      border-radius: 30px;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 12px rgba(230, 115, 159, 0.3);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      text-decoration: none;
+    }
+
+    .btn-main:hover {
+      background-color: var(--btn-pink-hover);
+      transform: translateY(-2px);
+    }
+
+    .btn-no {
+      background-color: var(--btn-purple);
+      color: white;
+      border: none;
+      padding: 12px 28px;
+      border-radius: 30px;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(155, 138, 196, 0.3);
+      z-index: 999;
+      user-select: none;
+      touch-action: manipulation;
+    }
+
+    /* Form Inputs */
+    .form-group {
+      width: 100%;
+      text-align: left;
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      color: var(--text-maroon);
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .input-box {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid #dcd4cc;
+      border-radius: 12px;
+      background-color: #fcfbf9;
+      color: #444;
+      font-family: inherit;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .input-box:focus {
+      border-color: var(--btn-pink);
+    }
+
+    /* Food Grid */
+    .food-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      width: 100%;
+      margin-bottom: 24px;
+    }
+
+    .food-card {
+      background: #fdfbf9;
+      border: 1.5px solid transparent;
+      border-radius: 16px;
+      padding: 14px 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .food-card .emoji {
+      font-size: 28px;
+    }
+
+    .food-card label {
+      font-size: 12px;
+      color: var(--subtext-gray);
+      cursor: pointer;
+    }
+
+    .food-card.selected {
+      border-color: var(--btn-pink);
+      background-color: #fbf0f4;
+    }
+
+    /* Fee Box */
+    .fee-card {
+      border: 1px dashed var(--border-pink);
+      background-color: #fbf5f7;
+      border-radius: 16px;
+      padding: 20px;
+      width: 100%;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .fee-card .title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-maroon);
+    }
+
+    .fee-card .amount {
+      font-family: 'Playfair Display', serif;
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--text-maroon);
+      margin: 8px 0;
+    }
+
+    .fee-card .details {
+      font-size: 11px;
+      color: #888;
+    }
+
+    /* Baby Custom Page Style */
+    .baby-card {
+      background: #fcf6f8;
+      border: 2px solid var(--border-pink);
+      border-radius: 20px;
+      padding: 25px 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 15px rgba(230, 115, 159, 0.1);
+    }
+
+    .baby-text {
+      font-family: 'Playfair Display', serif;
+      color: var(--text-maroon);
+      font-size: 20px;
+      font-weight: 600;
+      line-height: 1.5;
+    }
+
+    /* Step Visibility */
+    .step {
+      display: none;
+      width: 100%;
+      flex-direction: column;
+      align-items: center;
+      animation: fadeIn 0.4s ease-in-out forwards;
+    }
+
+    .step.active {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .watermark {
+      position: absolute;
+      bottom: 12px;
+      font-size: 10px;
+      color: #b0a69d;
+    }
+  </style>
 </head>
-<body class="p-3 md:p-6 text-gray-800 relative">
+<body>
 
-    <div id="emoji-container"></div>
-
-    <!-- MAIN CONTAINER -->
-    <div class="max-w-4xl mx-auto relative z-20 space-y-6">
-
-        <header class="glass-card rounded-3xl p-6 text-center shadow-xl border-4 border-pink-300 relative overflow-hidden">
-            <div class="absolute -right-6 -top-6 bg-yellow-300 text-xs font-bold px-8 py-2 rotate-12 shadow-md">
-                100% NAUTANKI!
-            </div>
-            <h1 class="text-4xl md:text-6xl font-fredoka text-pink-600 tracking-wide mb-2 wiggle inline-block">
-                👑 YUMMI'S WORLD 👑
-            </h1>
-            <p class="text-lg md:text-xl font-bold text-purple-700">
-                Warning: World's Cutest & Most Dangerously Hungry Girl Inside! 🍕🍔
-            </p>
-            <div class="mt-4 flex justify-center gap-3 flex-wrap">
-                <span class="bg-pink-200 text-pink-800 text-xs font-bold px-3 py-1 rounded-full shadow">#DramaQueen</span>
-                <span class="bg-yellow-200 text-yellow-800 text-xs font-bold px-3 py-1 rounded-full shadow">#AlwaysBhooki</span>
-                <span class="bg-purple-200 text-purple-800 text-xs font-bold px-3 py-1 rounded-full shadow">#SleepingBeauty</span>
-                <span class="bg-green-200 text-green-800 text-xs font-bold px-3 py-1 rounded-full shadow">#CutestDevil</span>
-            </div>
-        </header>
-
-        <section class="glass-card rounded-3xl p-6 shadow-xl border-2 border-pink-200 text-center">
-            <h2 class="text-2xl md:text-3xl font-fredoka text-purple-800 mb-2">
-                📊 Official Yummi-O-Meter
-            </h2>
-            <p class="text-gray-600 mb-4 text-sm md:text-base">Click the button below to analyze Yummi's current state!</p>
-
-            <div class="w-full bg-gray-200 rounded-full h-8 overflow-hidden shadow-inner relative border border-gray-300">
-                <div id="meter-bar" class="bg-gradient-to-r from-pink-400 via-purple-500 to-red-500 h-full w-[50%] transition-all duration-700 rounded-full flex items-center justify-end pr-3 text-white font-bold text-xs md:text-sm">
-                    <span id="meter-text">50% Danger</span>
-                </div>
-            </div>
-
-            <div id="meter-status" class="mt-4 p-4 bg-white/80 rounded-2xl border-2 border-dashed border-pink-400 font-bold text-pink-600 text-lg md:text-xl min-h-[60px] flex items-center justify-center">
-                ✨ Click "Scan Yummi" to reveal her current mood! ✨
-            </div>
-
-            <button onclick="scanYummi()" class="mt-4 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-bold py-3 px-8 rounded-full shadow-lg transform active:scale-95 transition-all text-lg border-2 border-white">
-                🔍 Scan Yummi's Brain Right Now!
-            </button>
-        </section>
-
-        <!-- YUMMI KYA CHAHTI HAI SECTION -->
-        <section class="glass-card rounded-3xl p-6 shadow-xl border-2 border-pink-300 text-center relative overflow-hidden bg-pink-50/40">
-            <h2 class="text-2xl md:text-3xl font-fredoka text-pink-600 mb-2">
-                💖 Yummi Kya Chahti Hai? 🤔
-            </h2>
-            <p class="text-gray-700 mb-6 font-semibold">Choose the option below!</p>
-
-            <!-- Shuffle / Dodge Container -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 relative min-h-[180px] p-2" id="yummi-likes-container">
-                <button id="like-btn-1" onmouseover="dodgeLikeBtn(1)" onclick="dodgeLikeBtn(1)" class="bg-gradient-to-r from-purple-400 to-pink-400 text-white font-bold py-3 px-4 rounded-xl shadow transition-all text-sm">
-                    💎 Option 1: Diamonds
-                </button>
-                <button id="like-btn-2" onmouseover="dodgeLikeBtn(2)" onclick="dodgeLikeBtn(2)" class="bg-gradient-to-r from-purple-400 to-pink-400 text-white font-bold py-3 px-4 rounded-xl shadow transition-all text-sm">
-                    👀 Option 2: Ladko ki attention
-                </button>
-                <button id="like-btn-3" onmouseover="dodgeLikeBtn(3)" onclick="dodgeLikeBtn(3)" class="bg-gradient-to-r from-purple-400 to-pink-400 text-white font-bold py-3 px-4 rounded-xl shadow transition-all text-sm">
-                    📱 Option 3: Unlimited Instagram ID
-                </button>
-                <button id="like-btn-4" onmouseover="dodgeLikeBtn(4)" onclick="dodgeLikeBtn(4)" class="bg-gradient-to-r from-purple-400 to-pink-400 text-white font-bold py-3 px-4 rounded-xl shadow transition-all text-sm">
-                    👦 Option 4: Male Friends
-                </button>
-                <button id="like-btn-5" onmouseover="dodgeLikeBtn(5)" onclick="dodgeLikeBtn(5)" class="bg-gradient-to-r from-purple-400 to-pink-400 text-white font-bold py-3 px-4 rounded-xl shadow transition-all text-sm">
-                    👬 Option 5: Bahut Saare Male Friends
-                </button>
-                <!-- Option 6 (Initially Hidden) -->
-                <button id="like-btn-6" onclick="exOptionClick()" class="hidden bg-gradient-to-r from-red-500 to-pink-600 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition-all text-sm border-2 border-yellow-300 animate-pulse">
-                    💔 Option 6: Ex Wapash Aajaye
-                </button>
-            </div>
-
-            <!-- Reveal Real Truth Button -->
-            <div class="mt-6">
-                <button onclick="revealYummiTruth()" class="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-bold py-3.5 px-10 rounded-full shadow-xl border-2 border-white text-lg transform active:scale-95 transition-all">
-                    ✨ Reveal Real Truth ✨
-                </button>
-            </div>
-
-            <div id="yummi-truth-result" class="mt-4 p-4 bg-white/90 rounded-2xl border-2 border-pink-400 font-bold text-pink-700 hidden text-lg shadow-md"></div>
-        </section>
-
-        <!-- FREE FIRE MYSTERY SECTION -->
-        <section class="glass-card rounded-3xl p-6 shadow-xl border-2 border-orange-300 text-center relative overflow-hidden bg-orange-50/40">
-            <h2 class="text-2xl md:text-3xl font-fredoka text-orange-600 mb-2">
-                🎮 Free Fire Mystery: Tumne Sth Khelna Kyu Band Kar Diya? 🔥
-            </h2>
-            <p class="text-gray-700 mb-6 font-semibold">Sach sach batao, exact reason kya hai? 😂</p>
-
-            <div class="flex justify-center gap-4 flex-wrap relative min-h-[120px] items-center" id="ff-quiz-container">
-                <button id="ff-btn-1" onmouseover="dodgeFFBtn(1)" onclick="dodgeFFBtn(1)" class="bg-amber-500 text-white font-bold py-3 px-6 rounded-2xl shadow-lg transition-all text-base md:text-lg absolute md:static">
-                    😒 Ab mann nahi karta mere sath? ❌
-                </button>
-                <button onclick="answerFFQuiz()" class="bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white font-bold py-3 px-8 rounded-2xl shadow-lg transform active:scale-95 transition-all text-base md:text-lg border-2 border-white">
-                    👀 Koi aur dusra mil gaya kya?
-                </button>
-                <button id="ff-btn-3" onmouseover="dodgeFFBtn(3)" onclick="dodgeFFBtn(3)" class="bg-purple-600 text-white font-bold py-3 px-6 rounded-2xl shadow-lg transition-all text-base md:text-lg absolute md:static">
-                    🙈 Main Noob hu isliye? ❌
-                </button>
-            </div>
-            <div id="ff-quiz-result" class="mt-4 p-4 bg-white/90 rounded-2xl border-2 border-orange-300 font-bold text-orange-800 hidden text-lg md:text-xl shadow-sm"></div>
-        </section>
-
-        <!-- EX REMEMBRANCE SECTION -->
-        <section class="glass-card rounded-3xl p-6 shadow-xl border-2 border-indigo-200 text-center relative overflow-hidden">
-            <h2 class="text-2xl md:text-3xl font-fredoka text-indigo-700 mb-2">
-                💔 Ex Ki Yaad Metric 💔
-            </h2>
-            <p class="text-gray-600 mb-6">Kya Yummi ko apne Ex ki yaad aati hai? 🤔</p>
-
-            <div class="flex justify-center gap-6 flex-wrap relative min-h-[100px] items-center" id="ex-quiz-container">
-                <button onclick="answerExQuiz()" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-8 rounded-2xl shadow-lg transform active:scale-95 transition-all text-xl flex items-center gap-2">
-                    <i class="fa-solid fa-heart-crack"></i> YES! 😭
-                </button>
-                <button id="ex-no-btn" onmouseover="dodgeExNoBtn()" onclick="dodgeExNoBtn()" class="bg-gray-500 text-white font-bold py-3 px-8 rounded-2xl shadow-lg transition-all text-xl absolute md:static">
-                    NO ❌
-                </button>
-            </div>
-            <p id="ex-quiz-result" class="mt-4 font-bold text-red-600 hidden text-lg md:text-xl"></p>
-        </section>
-
-        <section class="glass-card rounded-3xl p-6 shadow-xl border-2 border-purple-200 text-center relative overflow-hidden">
-            <h2 class="text-2xl md:text-3xl font-fredoka text-pink-600 mb-2">
-                ❓ Universal Truth Quiz: Is Yummi Always Right?
-            </h2>
-            <p class="text-gray-600 mb-6">Choose carefully! (Hint: Your life depends on it 😂)</p>
-
-            <div class="flex justify-center gap-6 flex-wrap relative min-h-[100px] items-center" id="quiz-container">
-                <button onclick="answerQuiz(true)" class="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-2xl shadow-lg transform active:scale-95 transition-all text-xl flex items-center gap-2">
-                    <i class="fa-solid fa-circle-check"></i> YES! ALWAYS! 👑
-                </button>
-                <button id="no-btn" onmouseover="dodgeNoBtn()" onclick="dodgeNoBtn()" class="bg-red-500 text-white font-bold py-3 px-8 rounded-2xl shadow-lg transition-all text-xl absolute md:static">
-                    NO (Never) ❌
-                </button>
-            </div>
-            <p id="quiz-result" class="mt-4 font-bold text-purple-700 hidden text-lg"></p>
-        </section>
-
-        <section class="glass-card rounded-3xl p-6 shadow-xl border-2 border-red-200 text-center bg-red-50/50">
-            <h2 class="text-2xl md:text-3xl font-fredoka text-red-600 mb-2">
-                🚨 EMERGENCY BUTTON! 🚨
-            </h2>
-            <p class="text-gray-700 mb-4 font-semibold">
-                What to do if Yummi is angry? Press button below immediately!
-            </p>
-            <button onclick="handleEmergency()" class="bg-red-600 hover:bg-red-700 text-white font-bold py-4 px-10 rounded-full shadow-2xl animate-pulse text-xl border-4 border-yellow-300 transform active:scale-90 transition-all">
-                ⚠️ CLICK HERE IF YUMMI IS MAD ⚠️
-            </button>
-            <div id="emergency-modal" class="hidden mt-6 p-4 bg-white rounded-2xl border-2 border-red-400 text-left space-y-2 shadow-inner">
-                <h3 class="font-bold text-red-600 text-lg text-center">🚨 EMERGENCY PROTOCOL ACTIVATED:</h3>
-                <ul class="list-disc list-inside text-gray-800 space-y-1 font-semibold text-sm md:text-base">
-                    <li> Step 1: Gently hand over Momos 🥟 or Chocolate 🍫.</li>
-                    <li> Step 2: Say <em>"Aap bilkul sahi ho, meri hi galti thi!"</em></li>
-                    <li> Step 3: Do NOT argue with Yummi (Law of Physics #101).</li>
-                    <li> Step 4: Praise her cutoff cute looks 🥺.</li>
-                </ul>
-            </div>
-        </section>
-
-        <section class="glass-card rounded-3xl p-6 shadow-xl border-2 border-yellow-200 text-center">
-            <h2 class="text-2xl md:text-3xl font-fredoka text-yellow-600 mb-2">
-                🍔 Yummi's Secret Craving Generator 🍟
-            </h2>
-            <p class="text-gray-600 mb-4">Can't decide what Yummi wants to eat? Let the magic generator pick!</p>
-
-            <div id="food-display" class="my-4 p-6 bg-yellow-100/80 rounded-2xl border-2 border-dashed border-yellow-400 text-3xl font-bold text-yellow-800 min-h-[100px] flex flex-col items-center justify-center gap-2">
-                <span>🤔 What does Yummi want?</span>
-            </div>
-
-            <button onclick="generateFood()" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-3 px-8 rounded-full shadow-lg transform active:scale-95 transition-all text-lg">
-                🎲 Order Food For Yummi!
-            </button>
-        </section>
-
-        <section class="glass-card rounded-3xl p-6 shadow-xl border-2 border-pink-200">
-            <h2 class="text-2xl md:text-3xl font-fredoka text-pink-600 text-center mb-6">
-                📜 100% True Certified Facts About Yummi 📜
-            </h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="bg-white/80 p-4 rounded-2xl border border-pink-200 shadow-sm flex items-start gap-3">
-                    <span class="text-3xl">😴</span>
-                    <div>
-                        <h3 class="font-bold text-pink-700">Kumbhkaran's Rival</h3>
-                        <p class="text-sm text-gray-600">Can sleep for 14 hours and still say: <em>"Yaar bohot thak gayi hu!"</em></p>
-                    </div>
-                </div>
-                <div class="bg-white/80 p-4 rounded-2xl border border-pink-200 shadow-sm flex items-start gap-3">
-                    <span class="text-3xl">🍕</span>
-                    <div>
-                        <h3 class="font-bold text-pink-700">Bhooki 24/7</h3>
-                        <p class="text-sm text-gray-600">"Mujhe khana nahi khana" -> Eats half of your plate 2 minutes later.</p>
-                    </div>
-                </div>
-                <div class="bg-white/80 p-4 rounded-2xl border border-pink-200 shadow-sm flex items-start gap-3">
-                    <span class="text-3xl">🎭</span>
-                    <div>
-                        <h3 class="font-bold text-pink-700">Drama Level 999+</h3>
-                        <p class="text-sm text-gray-600">Smallest inconvenience happens -> <em>"Meri to kismat hi kharab hai!"</em></p>
-                    </div>
-                </div>
-                <div class="bg-white/80 p-4 rounded-2xl border border-pink-200 shadow-sm flex items-start gap-3">
-                    <span class="text-3xl">💖</span>
-                    <div>
-                        <h3 class="font-bold text-pink-700">Pure Heart</h3>
-                        <p class="text-sm text-gray-600">Kitna bhi gussa kare, bottom line is Yummi is super cute & sweetest!</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="glass-card rounded-3xl p-6 shadow-xl border-2 border-purple-200 text-center">
-            <h2 class="text-2xl md:text-3xl font-fredoka text-purple-700 mb-4">
-                🔊 Yummi's Soundboard & Compliment Box 🎁
-            </h2>
-            <p class="text-gray-600 mb-6">Click any button below to hear cute funny tones & compliments!</p>
-
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-                <button onclick="playCuteSound('compliment')" class="bg-pink-400 hover:bg-pink-500 text-white font-bold p-3 rounded-2xl shadow transform active:scale-95 transition-all text-sm">
-                    💖 Compliment Yummi
-                </button>
-                <button onclick="playCuteSound('dramaqueen')" class="bg-purple-400 hover:bg-purple-500 text-white font-bold p-3 rounded-2xl shadow transform active:scale-95 transition-all text-sm">
-                    👸 Drama Queen Alert
-                </button>
-                <button onclick="playCuteSound('food')" class="bg-yellow-400 hover:bg-yellow-500 text-white font-bold p-3 rounded-2xl shadow transform active:scale-95 transition-all text-sm">
-                    🥟 Hungry Yummi
-                </button>
-                <button onclick="playCuteSound('love')" class="bg-red-400 hover:bg-red-500 text-white font-bold p-3 rounded-2xl shadow transform active:scale-95 transition-all text-sm">
-                    🥰 Extra Love
-                </button>
-            </div>
-
-            <div id="sound-message" class="mt-4 p-4 bg-white/90 rounded-2xl border border-purple-300 font-bold text-purple-800 hidden text-base md:text-lg"></div>
-        </section>
-
-        <footer class="text-center py-6 text-gray-700 font-bold">
-            <p class="text-sm">Made with ❤️, 🍕 and lots of Nautanki for <span class="text-pink-600 font-fredoka text-lg">YUMMI</span>!</p>
-            <p class="text-xs text-gray-500 mt-1">Warning: Do not show this page if Yummi hasn't eaten yet today! 😂</p>
-        </footer>
-
+  <div class="card-container" id="cardContainer">
+    
+    <!-- STEP 1 -->
+    <div class="step active" id="step1">
+      <div class="media-box">
+        <img src="https://images.unsplash.com/photo-1517849845537-4d257902454a?w=300" alt="Cute Dog">
+      </div>
+      <h1>🌸 Will you go on a date with me? 🌸</h1>
+      <div class="btn-group">
+        <button class="btn-main" onclick="goToStep(2)">YES ♥</button>
+        <button class="btn-no" id="noBtn" 
+                onmouseover="moveNoButton()" 
+                onclick="moveNoButton()" 
+                ontouchstart="moveNoButton(event)"
+                ontouchmove="moveNoButton(event)">NO 🐾</button>
+      </div>
     </div>
 
-    <script>
-        // Web Audio API Synth
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        let audioCtx;
+    <!-- STEP 2 -->
+    <div class="step" id="step2">
+      <div class="media-box">
+        <img src="https://images.unsplash.com/photo-1537151608828-ea2b11777ee8?w=300" alt="Dog">
+      </div>
+      <h1>WAIT YOU ACTUALLY SAID YES?? 😭</h1>
+      <p class="subtext">I was so ready for you to say no 😂</p>
+      <button class="btn-main" onclick="goToStep(3)">okay okay! →</button>
+    </div>
 
-        function initAudio() {
-            if (!audioCtx) {
-                audioCtx = new AudioContext();
-            }
-        }
+    <!-- STEP 3 -->
+    <div class="step" id="step3">
+      <div style="font-size: 30px; margin-bottom: 10px;">📅🐾</div>
+      <h1>So... when are you free?</h1>
+      <div class="form-group" style="margin-top: 20px;">
+        <label>Pick a Day 🗓️</label>
+        <input type="date" class="input-box" id="dateInput">
+      </div>
+      <div class="form-group">
+        <label>What Time? ⏰</label>
+        <select class="input-box" id="timeInput">
+          <option value="" disabled selected>Select a time...</option>
+          <option value="6:00 PM">Evening (6:00 PM)</option>
+          <option value="8:00 PM">Dinner (8:00 PM)</option>
+          <option value="Flexible">Surprise Me</option>
+        </select>
+      </div>
+      <button class="btn-main" style="margin-top: 10px;" onclick="validateStep3()">set the date! ♥</button>
+    </div>
 
-        function playBeep(freq = 440, type = 'sine', duration = 0.2) {
-            try {
-                initAudio();
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.type = type;
-                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.start();
-                osc.stop(audioCtx.currentTime + duration);
-            } catch(e) {
-                console.log("Audio play blocked");
-            }
-        }
+    <!-- STEP 4 -->
+    <div class="step" id="step4">
+      <h1>What are we feeling? 🍽️✨</h1>
+      <p class="subtext">pick your vibe</p>
+      
+      <div class="food-grid">
+        <div class="food-card" onclick="selectFood(this)">
+          <span class="emoji">🍕</span>
+          <label>Pizza</label>
+        </div>
+        <div class="food-card" onclick="selectFood(this)">
+          <span class="emoji">🍣</span>
+          <label>Sushi</label>
+        </div>
+        <div class="food-card" onclick="selectFood(this)">
+          <span class="emoji">🍔</span>
+          <label>Burgers</label>
+        </div>
+        <div class="food-card" onclick="selectFood(this)">
+          <span class="emoji">🍝</span>
+          <label>Pasta</label>
+        </div>
+        <div class="food-card selected" onclick="selectFood(this)">
+          <span class="emoji">🌮</span>
+          <label>Tacos</label>
+        </div>
+        <div class="food-card" onclick="selectFood(this)">
+          <span class="emoji">🍜</span>
+          <label>Ramen</label>
+        </div>
+      </div>
 
-        // Generate Floating Emojis
-        const emojis = ['👑', '💖', '🍕', '🥟', '👸', '✨', '🍟', '🍩', '😴', '🔥'];
-        const emojiContainer = document.getElementById('emoji-container');
+      <button class="btn-main" onclick="goToStep(5)">continue →</button>
+    </div>
 
-        function createFloatingEmoji() {
-            const emoji = document.createElement('div');
-            emoji.className = 'floating-emoji text-2xl md:text-3xl';
-            emoji.innerText = emojis[Math.floor(Math.random() * emojis.length)];
-            emoji.style.left = Math.random() * 95 + 'vw';
-            emoji.style.animationDuration = (Math.random() * 3 + 4) + 's';
-            emojiContainer.appendChild(emoji);
+    <!-- STEP 5 -->
+    <div class="step" id="step5">
+      <h1>glad you didn't say no. be ready by 6, I'm coming to get you 🚗</h1>
+      <p class="subtext" style="font-size: 11px; margin-top: 10px; margin-bottom: 20px;">
+        P.S. normal people text. I made a website on Replit, during lunch, for you. no big deal.
+      </p>
+      <div style="color: var(--btn-pink); letter-spacing: 4px; margin-bottom: 24px;">♥ ♥ ♥ ♥ ♥</div>
+      <button class="btn-main" onclick="goToStep(6)">ok I accept 🥳</button>
+    </div>
 
-            setTimeout(() => {
-                emoji.remove();
-            }, 7000);
-        }
+    <!-- STEP 6 -->
+    <div class="step" id="step6">
+      <div style="font-size: 26px; margin-bottom: 8px;">💳</div>
+      <h1>one small fee</h1>
+      <p class="subtext" style="margin-bottom: 16px;">
+        to confirm your acceptance of this date, please complete the following transaction. totally normal. everyone does this.
+      </p>
 
-        setInterval(createFloatingEmoji, 600);
+      <div class="fee-card">
+        <div class="title">Date Agreement™</div>
+        <div class="amount">$499</div>
+        <div class="details">one-time fee • non-refundable • absolutely worth it</div>
+      </div>
 
-        // 1. Yummi Meter Logic
-        const meterStates = [
-            { pct: '20%', text: 'Cute & Innocent Angel 😇', status: 'Warning: Fake alert! Ye bas khana mangne ka tarika hai! 😜' },
-            { pct: '50%', text: '50% Drama + 50% Bhook 🍔', status: 'Normal State: Dimaag me Momos aur Instagram Reels chal rahe hain!' },
-            { pct: '85%', text: 'High Level Danger / Gussa 😡', status: 'DANGER! Jaldi se Chocolate do warna tabahi mach jayegi!' },
-            { pct: '100%', text: '100% UNSTOPPABLE DRAMA QUEEN 👑', status: 'Bina wajah gussa hone ka world record ban chuka hai! 😂' }
-        ];
+      <button class="btn-main" onclick="goToStep(7)">pay $499 & confirm 💝</button>
+      <a href="#" style="font-size: 11px; color: #999; margin-top: 14px; text-decoration: none;" onclick="alert('Option disabled 😉!'); return false;">go back</a>
+    </div>
 
-        let stateIdx = 0;
-        function scanYummi() {
-            playBeep(600, 'triangle', 0.15);
-            setTimeout(() => playBeep(800, 'triangle', 0.2), 150);
+    <!-- STEP 7: FINAL REVEAL PAGE -->
+    <div class="step" id="step7">
+      <div style="font-size: 45px; margin-bottom: 15px;">🧸🎀</div>
+      <div class="baby-card">
+        <p class="baby-text">baby aap toh abhi bachi ho aur bacho ke pass koi payment system nhi hota awlee🤭💖</p>
+      </div>
+      <p class="subtext" style="margin-top: 5px; font-size: 14px; color: var(--text-maroon);">
+        Isliye ye date meri taraf se free hai! See you soon! 🎉✨
+      </p>
+      <div style="color: var(--btn-pink); font-size: 20px; margin-top: 15px;">💖 🌸 💖</div>
+    </div>
 
-            const meterBar = document.getElementById('meter-bar');
-            const meterText = document.getElementById('meter-text');
-            const meterStatus = document.getElementById('meter-status');
+    <div class="watermark">🌸 built with love 🌸</div>
+  </div>
 
-            stateIdx = (stateIdx + 1) % meterStates.length;
-            const currentState = meterStates[stateIdx];
+  <script>
+    function goToStep(stepNumber) {
+      document.querySelectorAll('.step').forEach(step => {
+        step.classList.remove('active');
+      });
+      document.getElementById('step' + stepNumber).classList.add('active');
+    }
 
-            meterBar.style.width = currentState.pct;
-            meterText.innerText = currentState.text;
-            meterStatus.innerHTML = `✨ <strong>Status:</strong> ${currentState.status}`;
+    function validateStep3() {
+      const dateVal = document.getElementById('dateInput').value;
+      if (!dateVal) {
+        alert("Pehle Date select kijiye! 📅🌸");
+        return;
+      }
+      goToStep(4);
+    }
 
-            confetti({
-                particleCount: 40,
-                spread: 60,
-                origin: { y: 0.4 }
-            });
-        }
+    function moveNoButton(e) {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      
+      const noBtn = document.getElementById('noBtn');
+      const container = document.getElementById('cardContainer');
 
-        // 2. Yummi Kya Chahti Hai - Dodge & Reveal Option 6 Logic
-        function dodgeLikeBtn(num) {
-            playBeep(300, 'sawtooth', 0.1);
-            const btn = document.getElementById(`like-btn-${num}`);
-            const container = document.getElementById('yummi-likes-container');
-            const rect = container.getBoundingClientRect();
+      // Set position absolute relative to card container
+      noBtn.style.position = 'absolute';
 
-            const randomX = Math.random() * (rect.width - 120);
-            const randomY = Math.random() * (rect.height - 40);
+      const containerWidth = container.clientWidth;
+      const containerHeight = container.clientHeight;
+      const btnWidth = noBtn.offsetWidth;
+      const btnHeight = noBtn.offsetHeight;
 
-            btn.style.position = 'absolute';
-            btn.style.left = `${randomX}px`;
-            btn.style.top = `${randomY}px`;
-        }
+      // Safe boundaries inside card
+      const minX = 20;
+      const maxX = containerWidth - btnWidth - 20;
+      const minY = 20;
+      const maxY = containerHeight - btnHeight - 20;
 
-        function revealYummiTruth() {
-            playBeep(523, 'sine', 0.3);
-            
-            // Unhide Option 6 when "Reveal Real Truth" button is clicked
-            const opt6 = document.getElementById('like-btn-6');
-            opt6.classList.remove('hidden');
+      // Calculate random coords
+      const randomX = Math.floor(Math.random() * (maxX - minX + 1)) + minX;
+      const randomY = Math.floor(Math.random() * (maxY - minY + 1)) + minY;
 
-            const result = document.getElementById('yummi-truth-result');
-            result.classList.remove('hidden');
-            result.innerHTML = '🎯 **REAL TRUTH REVEALED!** Look at Option 6 that just appeared above! 💔😱';
+      noBtn.style.left = randomX + 'px';
+      noBtn.style.top = randomY + 'px';
+    }
 
-            confetti({
-                particleCount: 90,
-                spread: 70,
-                origin: { y: 0.45 }
-            });
-        }
+    function selectFood(card) {
+      document.querySelectorAll('.food-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+    }
+  </script>
 
-        function exOptionClick() {
-            playBeep(300, 'sine', 0.3);
-            const result = document.getElementById('yummi-truth-result');
-            result.classList.remove('hidden');
-            result.innerHTML = '💔 **HAHA!** Dekha, Option 6 hi asli sach tha! 😂';
-        }
-
-        // 3. Free Fire Quiz - Dodge Button 1 & Button 3
-        function dodgeFFBtn(btnNum) {
-            playBeep(300, 'sawtooth', 0.1);
-            const btn = document.getElementById(`ff-btn-${btnNum}`);
-            const container = document.getElementById('ff-quiz-container');
-            const rect = container.getBoundingClientRect();
-
-            const randomX = Math.random() * (rect.width - 150);
-            const randomY = Math.random() * (rect.height - 50);
-
-            btn.style.position = 'absolute';
-            btn.style.left = `${randomX}px`;
-            btn.style.top = `${randomY}px`;
-        }
-
-        function answerFFQuiz() {
-            playBeep(523, 'sine', 0.3);
-            const result = document.getElementById('ff-quiz-result');
-            result.classList.remove('hidden');
-            result.innerHTML = '🔥 <strong>SAHI PAKDE HAIN!</strong> 🎯 Yummi ne aapse picha chhudane ke liye gaming hi chhod di! 😂';
-
-            confetti({
-                particleCount: 70,
-                spread: 60,
-                origin: { y: 0.5 }
-            });
-        }
-
-        // 4. Ex Quiz Logic
-        function dodgeExNoBtn() {
-            playBeep(300, 'sawtooth', 0.1);
-            const noBtn = document.getElementById('ex-no-btn');
-            const container = document.getElementById('ex-quiz-container');
-            const rect = container.getBoundingClientRect();
-
-            const randomX = Math.random() * (rect.width - 120);
-            const randomY = Math.random() * (rect.height - 50);
-
-            noBtn.style.position = 'absolute';
-            noBtn.style.left = `${randomX}px`;
-            noBtn.style.top = `${randomY}px`;
-        }
-
-        function answerExQuiz() {
-            playBeep(400, 'sine', 0.4);
-            const result = document.getElementById('ex-quiz-result');
-            result.classList.remove('hidden');
-            result.innerHTML = '😭 Dekha! Bola tha na yaad aati hai tujhe abhi bhi! 💔';
-            
-            confetti({
-                particleCount: 80,
-                spread: 60,
-                origin: { y: 0.6 }
-            });
-        }
-
-        // 5. Quiz "Is Yummi Always Right?" Dodge No Button Logic
-        function dodgeNoBtn() {
-            playBeep(300, 'sawtooth', 0.1);
-            const noBtn = document.getElementById('no-btn');
-            const container = document.getElementById('quiz-container');
-            const rect = container.getBoundingClientRect();
-
-            const randomX = Math.random() * (rect.width - 120);
-            const randomY = Math.random() * (rect.height - 50);
-
-            noBtn.style.position = 'absolute';
-            noBtn.style.left = `${randomX}px`;
-            noBtn.style.top = `${randomY}px`;
-        }
-
-        function answerQuiz(isYes) {
-            playBeep(880, 'sine', 0.3);
-            const result = document.getElementById('quiz-result');
-            result.classList.remove('hidden');
-            result.innerHTML = '🎉 SAHI JAWAB! Yummi is ALWAYS right! (Aapki jaan bach gayi 😂)';
-            
-            confetti({
-                particleCount: 100,
-                spread: 70,
-                origin: { y: 0.6 }
-            });
-        }
-
-        // 6. Emergency Button Logic
-        function handleEmergency() {
-            playBeep(200, 'square', 0.4);
-            const modal = document.getElementById('emergency-modal');
-            modal.classList.toggle('hidden');
-        }
-
-        // 7. Food Generator
-        const foodItems = [
-            { name: 'Steam Momos with Red Chutney 🥟', detail: 'Chutney thodi teekhi honi chahiye!' },
-            { name: 'Cheesy Loaded Pizza 🍕', detail: 'Extra cheese is mandatory!' },
-            { name: 'Crispy French Fries 🍟', detail: 'Aadha wo khayegi, aadha aapka snatch karegi!' },
-            { name: 'Chilled Thick Cold Coffee 🧋', detail: 'Sip karke bolegi: "Aahh, ab sukoon mila!"' },
-            { name: 'Dark Chocolate & Ice Cream 🍫🍦', detail: 'Mood instant 100% happy hone ka secret!' }
-        ];
-
-        function generateFood() {
-            playBeep(523.25, 'sine', 0.2);
-            const display = document.getElementById('food-display');
-            const randomFood = foodItems[Math.floor(Math.random() * foodItems.length)];
-            
-            display.innerHTML = `
-                <span class="text-4xl animate-bounce">${randomFood.name}</span>
-                <span class="text-sm font-normal text-yellow-900 bg-yellow-200/80 px-3 py-1 rounded-full">${randomFood.detail}</span>
-            `;
-
-            confetti({
-                particleCount: 50,
-                spread: 50,
-                origin: { y: 0.7 }
-            });
-        }
-
-        // 8. Soundboard & Compliment Box
-        const soundMessages = {
-            compliment: [
-                "✨ Yummi, tum duniya ki sabse cute aur pyaari dramebaaz ho! 💖",
-                "🌟 Your smile is brighter than Yummi's anger level! 😄",
-                "👑 Kitni bhi nautanki kar lo, lagti toh cute hi ho! ✨"
-            ],
-            dramaqueen: [
-                "🎭 Drama Alert: OSCAR goes to Yummi for Best Emotional Scene! 🏆",
-                "😤 'Mai kisi se baat nahi karungi' - Says Yummi 2 seconds before talking endlessly!",
-                "💅 Attitude level: Top Of The World!"
-            ],
-            food: [
-                "🥟 'Bas ek momo aur' - Famous last words of Yummi!",
-                "🍔 Tumhara stomach nahi, magic portal hai... kitna bhi khao bharte hi nahi! 😂",
-                "🍫 Feed Yummi Chocolate to disable her Angry Mode!"
-            ],
-            love: [
-                "🥰 Yummi is 100% irreplaceable and 1000% loved!",
-                "❤️ You bring so much fun, chaos, and happiness everywhere!",
-                "✨ World's Best & Cutest Yummi Ever! 🤗"
-            ]
-        };
-
-        function playCuteSound(type) {
-            playBeep(659.25, 'sine', 0.25);
-            const msgBox = document.getElementById('sound-message');
-            msgBox.classList.remove('hidden');
-
-            const list = soundMessages[type];
-            const randomMsg = list[Math.floor(Math.random() * list.length)];
-            msgBox.innerHTML = randomMsg;
-
-            confetti({
-                particleCount: 35,
-                spread: 45,
-                origin: { y: 0.8 }
-            });
-        }
-    </script>
 </body>
 </html>
